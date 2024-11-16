@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\admin\AgentController;
+use App\Http\Controllers\admin\CalendarController;
 use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\StaffController;
 use App\Http\Controllers\AuthController;
@@ -43,10 +44,22 @@ Route::post('/login-post', [AuthController::class, 'post'])->name('login.post');
 route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.admin');
 
+    //calendar
+    Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
+    Route::get('/events', [CalendarController::class, 'getEvents'])->name('calendar.event');
+    Route::post('/add-event', [CalendarController::class, 'store'])->name('events.store');
+    Route::delete('/events/delete/{event}', [CalendarController::class, 'destroy']);
+    Route::get('/calendar-detail/{id}', [CalendarController::class, 'detail'])->name('calendar.detail');
+
+
+
     //user management
     Route::get('/user-management', [StaffController::class, 'index'])->name('user.index');
     Route::post('/user-management-register', [StaffController::class, 'register'])->name('user.register');
     Route::post('/user-management/deactivate/{id}', [StaffController::class, 'deactivate'])->name('user.deactivate');
+
+    Route::get('/user-detail/{id}', [StaffController::class, 'detail'])->name('user.detail');
+
 
     Route::get('/pending-request', [StaffController::class, 'pending'])->name('user.pending');
     Route::post('/pending-request/accept/{id}', [StaffController::class, 'accept'])->name('user.accept');

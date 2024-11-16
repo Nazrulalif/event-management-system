@@ -33,7 +33,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="" class="nav-link {{ (Request::is('admin/') ? 'active' : '') }}" >
+                    <a href="{{ route('calendar.index') }}" class="nav-link {{ (Request::is('admin/calendar') ? 'active' : '') }}" >
                         <i class="nav-icon fas fa-calendar-check"></i>
                         <p>
                             Calendar
@@ -42,12 +42,13 @@
                 </li>
                 <span class="pl-3 py-3 fw-bold text-uppercase " style="opacity: .8"> Setup</span>
                 <li class="nav-item {{ (Request::is('admin/user-management', 'admin/pending-request', 'admin/agent-management') ? 'menu-is-opening menu-open' : '') }}">
-                    <a class="nav-link {{ (Request::is('admin/user-management', 'admin/pending-request', 'admin/agent-management') ? 'active' : '') }}" >
+                    <a href="#" class="nav-link {{ (Request::is('admin/user-management', 'admin/pending-request', 'admin/agent-management') ? 'active' : '') }}" >
                         <i class="nav-icon fas fa-user"></i>
                         <p>
                             User Management
-                            <i class="right fas fa-angle-left"></i>
                         </p>
+                        <i class="right fas fa-angle-left"></i>
+
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">

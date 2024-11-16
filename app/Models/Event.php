@@ -20,7 +20,6 @@ class Event extends Model
         'state',
         'segment',
         'objective',
-        'platform',
         'status',
         'start_date',
         'end_date',
@@ -28,4 +27,6 @@ class Event extends Model
         'end_time',
         'created_by',
     ];
+
+    protected $dates = ['start_date', 'end_date'];
 }

@@ -117,4 +117,9 @@ class StaffController extends Controller
         }
         return response()->json(['message' => 'User not found'], 404);
     }
+
+    public function detail($id)
+    {
+        return view('admin.staff.detail');
+    }
 }

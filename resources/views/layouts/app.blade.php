@@ -4,9 +4,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>EventMS</title>
     <link rel="icon" href="{{asset('assets\img\eventms.png')}}">
-
+        <!-- Other head content -->
+    
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -33,7 +35,8 @@
     <link rel="stylesheet" href="{{asset('plugins/datatables-buttons/css/buttons.bootstrap4.min.css')}}">
     {{-- sweetalert2 --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-
+    <!-- fullCalendar -->
+    <link rel="stylesheet" href="{{asset('plugins/fullcalendar/main.css')}}">
     <style>
         .required::after {
             content: '*';
@@ -108,6 +111,9 @@
     <script src="{{asset('plugins/datatables-buttons/js/buttons.colVis.min.js')}}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+     <!-- fullCalendar 2.2.5 -->
+  <script src="{{asset('plugins/moment/moment.min.js')}}"></script>
+  <script src="{{asset('plugins/fullcalendar/main.js')}}"></script>
 
 </body>
 

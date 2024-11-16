@@ -55,7 +55,7 @@
                     render: function (data, type, row) {
                         return `
                             <div>
-                                <a type="button" title="View" class="btn btn-primary btn-sm">
+                                <a href="/admin/user-detail/${row.id}" type="button" title="View" class="btn btn-primary btn-sm">
                                     <i class="fas fa-eye"></i>
                                 </a>
                                 <button title="Deactivate" class="btn btn-danger btn-sm deactivate" data-id="${row.id}">
@@ -78,10 +78,9 @@
                 text: "This user will be deactivated!",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Yes, deactivate it!',
-                cancelButtonText: 'Cancel'
+                confirmButtonText: 'Yes, deactive it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
