@@ -12,15 +12,20 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('events', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('event_title');
-            $table->string('description')->nullable();
+            $table->string('poster_path');
+            $table->string('platform')->nullable();
+            $table->longText('objective')->nullable();
+            $table->string('segment')->default('Consumer');
+            $table->string('state')->default('Melaka');
             $table->string('status')->nullable();
+            $table->integer('period')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->time('start_time')->nullable();
             $table->time('end_time')->nullable();
-            $table->unsignedBigInteger('created_by')->nullable();
+            $table->uuid('created_by')->nullable();
             $table->timestamps();
 
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');

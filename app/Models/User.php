@@ -7,26 +7,32 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasUuids;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
+
+    protected $keyType = 'string'; // UUIDs are strings
+    public $incrementing = false;  // UUID is not auto-incrementing
     protected $fillable = [
         'name',
         'email',
         'password',
-        'staff_id',
         'role_guid',
         'gender',
         'profile_picture',
         'is_approve',
         'is_active',
+        'state',
+        'unit',
+        'team',
     ];
 
     /**
