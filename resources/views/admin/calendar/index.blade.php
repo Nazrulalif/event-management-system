@@ -116,7 +116,7 @@
 
             $('#deleteEventBtn').data('event-id', id);
             var eventId = id;
-            var detailUrl = '/admin/calendar-detail/' + eventId; // Adjust with your route structure
+            var detailUrl = '/admin/event-detail/' + eventId; // Adjust with your route structure
             $('#eventModal').find('#viewDetail').attr('href', detailUrl);
         });
     });
@@ -126,9 +126,14 @@
         // Initialize FullCalendar
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
             themeSystem: 'bootstrap',
-            editable: true, // Disable event editing
-            droppable: true, // Disable event dragging
+            editable: false, // Disable event editing
+            droppable: false, // Disable event dragging
             selectable: true, // Disable date selection
             events: function (info, successCallback, failureCallback) {
                 // Make an AJAX request to fetch events from the server
@@ -163,7 +168,7 @@
                 $('#createdBy').text(event.extendedProps.creator_name || '');
                 $('#deleteEventBtn').data('event-id', event.id);
                 var eventId = info.event.id;
-                var detailUrl = '/admin/calendar-detail/' +
+                var detailUrl = '/admin/event-detail/' +
                 eventId; // Adjust with your route structure
 
                 $('#eventModal').find('#viewDetail').attr('href', detailUrl);

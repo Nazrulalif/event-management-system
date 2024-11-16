@@ -16,11 +16,12 @@ class StaffController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = User::select('*')
-                ->where('is_approve', 'Y')
-                ->where('is_active', 'Y')
-                ->where('id', '!=', Auth::user()->id)
-                ->orderBy('created_at', 'desc')
+            $data = User::select('*', 'users.id as id', 'users.created_at as created_at')
+                ->join('roles', 'roles.id', '=', 'users.role_guid')
+                ->where('users.is_approve', 'Y')
+                ->where('users.is_active', 'Y')
+                ->where('users.id', '!=', Auth::user()->id)
+                ->orderBy('users.created_at', 'desc')
                 ->get();
             return DataTables::of($data)
                 ->editColumn('created_at', function ($user) {

@@ -66,9 +66,4 @@ class CalendarController extends Controller
             return response()->json(['message' => 'Error deleting event.'], 500);
         }
     }
-
-    public function detail($id)
-    {
-        return view('admin.calendar.detail');
-    }
 }

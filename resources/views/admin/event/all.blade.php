@@ -1,13 +1,16 @@
-@extends('admin.staff.index')
+@extends('admin.event.index')
 
-@section('list-content')
+@section('event-list')
+
 <table id="example" class="table table-bordered w-full">
     <thead>
         <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Gender</th>
-            <th>Access</th>
+            <th width='30%'>Event Title</th>
+            <th>Platform</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th width='20%'>Created By</th>
+            <th>Status</th>
             <th>Created At</th>
             <th>Actions</th>
         </tr>
@@ -16,6 +19,7 @@
 
     </tbody>
 </table>
+
 <!-- jQuery -->
 <script src="{{asset('plugins/jquery/jquery.min.js')}} "></script>
 
@@ -32,20 +36,24 @@
             ], // Order by the first column (index 0) in descending order
             autoWidth: false,
             responsive: true,
-            ajax: '/admin/user-management',
+            ajax: '/admin/event-management',
             columns: [
-                { data: 'name' },
-                { data: 'email' },
-                { data: 'gender' },
+                { data: 'event_title' },
+                { data: 'platform' },
+                { data: 'start_date' },
+                { data: 'end_date' },
+                { data: 'creator_name' },
                 {
-                    data: 'role_name',
+                    data: 'status',
                     render: function (data, type, row) {
-                        if (data == 'Admin') {
+                        if (data == 'Approve') {
                             return `<div class='badge badge-success'> ${data} </div>`;
-                        } else if (data == 'Staff') {
-                            return `<div class='badge badge-primary'> ${data} </div>`;
+                        } else if (data == 'Reject') {
+                            return `<div class='badge badge-danger'> ${data} </div>`;
+                        } else if (data == 'Cancelled') {
+                            return `<div class='badge badge-warning'> ${data} </div>`;
                         } else {
-                            return `<div class='badge badge-secondary'> Unknown Role </div>`;
+                            return `<div class='badge badge-secondary'> Unknown status </div>`;
                         }
                     },
                 },
@@ -55,11 +63,11 @@
                     render: function (data, type, row) {
                         return `
                             <div>
-                                <a href="/admin/user-detail/${row.id}" type="button" title="View" class="btn btn-primary btn-sm">
+                                <a type="button" title="View" class="btn btn-primary btn-sm">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <button title="Deactivate" class="btn btn-danger btn-sm deactivate" data-id="${row.id}">
-                                    <i class="fas fa-times"></i>
+                                <button title="Delete" class="btn btn-danger btn-sm delete" data-id="${row.id}">
+                                    <i class="fas fa-trash-alt"></i>
                                 </button>
                             </div>`;
                     },
@@ -70,29 +78,29 @@
         });
 
         // SweetAlert and AJAX Deactivation
-        $('#example').on('click', '.deactivate', function () {
-            const userId = $(this).data('id');
+        $('#example').on('click', '.delete', function () {
+            const id = $(this).data('id');
 
             Swal.fire({
                 title: 'Are you sure?',
-                text: "This user will be deactivated!",
+                text: "This event will be deleted!",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Yes, deactive it!',
+                confirmButtonText: 'Yes, delete it!',
                 cancelButtonText: 'No, cancel!',
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: `/admin/user-management/deactivate/${userId}`,
-                        type: 'POST',
+                        url: `/admin/event-management/delete/${id}`,
+                        type: 'DELETE',
                         data: {
                             _token: "{{ csrf_token() }}" // Ensure CSRF token is included
                         },
                         success: function (response) {
                             Swal.fire(
-                                'Deactivated!',
-                                'The user has been deactivated.',
+                                'Deleted!',
+                                'The event has been deleted.',
                                 'success'
                             );
                             table.ajax.reload(); // Reload the DataTable to reflect changes
@@ -100,7 +108,7 @@
                         error: function (xhr) {
                             Swal.fire(
                                 'Error!',
-                                'An error occurred while deactivating the user.',
+                                'An error occurred while deleted the event.',
                                 'error'
                             );
                         }
