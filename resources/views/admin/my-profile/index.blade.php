@@ -11,10 +11,10 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-3">
-                    @include('admin.staff.sidebar')
+                    @include('admin.my-profile.sidebar')
                 </div>
                 <div class="col-md-9">
-                    @include('admin.staff.content')
+                    @include('admin.my-profile.content')
                 </div>
             </div>
 

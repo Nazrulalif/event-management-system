@@ -121,6 +121,26 @@ class StaffController extends Controller
 
     public function detail($id)
     {
-        return view('admin.staff.detail');
+        $user = User::findOrFail($id);
+        return view('admin.staff.detail', compact('user'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        try {
+            $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'gender' => $request->gender,
+                'team' => $request->team,
+                'unit' => $request->unit,
+                'state' => $request->state,
+            ]);
+            return redirect()->back()->with('success', 'User detail updated Successfully.');
+        } catch (\Exception $th) {
+            return redirect()->back()->with('error', 'User detail update failed.');
+        }
     }
 }

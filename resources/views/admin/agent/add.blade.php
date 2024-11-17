@@ -32,7 +32,7 @@
                         <label for="channel" class="required">Channel</label>
                         <select name="channel" id="channel" class="form-control" required>
                             <option value="">Select Channel</option>
-                            <option value="Rover">Rover</option>
+                            <option value="Rovers">Rovers</option>
                             <option value="Agents (UCA/UCP)">Agents (UCA/UCP)</option>
                             <option value="Nextstar">Nextstar</option>
                         </select>

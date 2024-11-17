@@ -4,6 +4,7 @@ use App\Http\Controllers\admin\AgentController;
 use App\Http\Controllers\admin\CalendarController;
 use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\EventController;
+use App\Http\Controllers\admin\MyProfileController;
 use App\Http\Controllers\admin\StaffController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\staff\HomeController;
@@ -44,6 +45,8 @@ Route::post('/login-post', [AuthController::class, 'post'])->name('login.post');
 
 route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.admin');
+    Route::get('/my-profile', [MyProfileController::class, 'index'])->name('profile.admin');
+    Route::post('/my-profile-update', [MyProfileController::class, 'update'])->name('profile.admin.update');
 
     //calendar
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
@@ -57,6 +60,7 @@ route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::post('/user-management/deactivate/{id}', [StaffController::class, 'deactivate'])->name('user.deactivate');
 
     Route::get('/user-detail/{id}', [StaffController::class, 'detail'])->name('user.detail');
+    Route::post('/user-detail-update/{id}', [StaffController::class, 'update'])->name('user.detail.update');
 
     Route::get('/pending-request', [StaffController::class, 'pending'])->name('user.pending');
     Route::post('/pending-request/accept/{id}', [StaffController::class, 'accept'])->name('user.accept');
@@ -66,6 +70,10 @@ route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/agent-management', [AgentController::class, 'index'])->name('agent.index');
     Route::post('/agent-management/add', [AgentController::class, 'add'])->name('agent.add');
     Route::delete('/agent-management/delete/{id}', [AgentController::class, 'delete'])->name('agent.delete');
+
+    Route::get('/agent-detail/{id}', [AgentController::class, 'detail'])->name('agent.detail');
+    Route::post('/agent-detail-update/{id}', [AgentController::class, 'update'])->name('agent.detail.update');
+
 
     //event Management
     Route::get('/event-management', [EventController::class, 'index'])->name('event.index');

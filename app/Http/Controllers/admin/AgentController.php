@@ -63,4 +63,42 @@ class AgentController extends Controller
         }
         return response()->json(['message' => 'Agent not found'], 404);
     }
+
+    public function detail($id)
+    {
+        $agent = Agent::findOrFail($id);
+        return view('admin.agent.detail', compact('agent'));
+    }
+
+    public function update($id, Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:15',
+            'channel' => 'required',
+            'company_name' => 'nullable|string|max:255',
+            'unit' => 'nullable|string|max:255',
+        ]);
+
+
+        $agent = Agent::findOrFail($id);
+        $agent->name = $request->name;
+        $agent->email = $request->email;
+        $agent->phone_number = $request->phone;
+        $agent->channel = $request->channel;
+
+        // Save the attribute based on the selected channel
+        if ($request->channel === 'Rovers') {
+            $agent->attribute = $request->company_name; // Use company_name for 'Rovers'
+        } elseif ($request->channel === 'Nextstar') {
+            $agent->attribute = $request->unit; // Use unit for 'Nextstar'
+        } else {
+            $agent->attribute = null; // Clear attribute for other channels
+        }
+
+        $agent->save();
+
+        return redirect()->back()->with('success', 'Agent details updated successfully.');
+    }
 }

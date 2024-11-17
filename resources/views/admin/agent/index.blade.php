@@ -69,7 +69,7 @@
                     render: function (data, type, row) {
                         return `
                             <div>
-                                <a type="button" title="View" class="btn btn-primary btn-sm">
+                                <a href="/admin/agent-detail/${row.id}" title="View" class="btn btn-primary btn-sm">
                                     <i class="fas fa-eye"></i>
                                 </a>
                                 <button title="Delete" class="btn btn-danger btn-sm delete" data-id="${row.id}">

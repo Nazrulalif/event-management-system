@@ -10,12 +10,13 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <!-- Sidebar user panel (optional) -->
-        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex align-items-center">
             <div class="image">
                 <img src="{{asset('assets\img\avatar.png')}}" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="#" class="d-block">{{Auth::user()->name}}</a>
+                <div class="d-block">{{Auth::user()->name}}</div>
+                <a href="{{ route('profile.admin') }}" class="d-block text-primary">My profile</a>
             </div>
         </div>
 
@@ -41,8 +42,8 @@
                     </a>
                 </li>
                 <span class="pl-3 py-3 fw-bold text-uppercase " style="opacity: .8"> Setup</span>
-                <li class="nav-item {{ (Request::is('admin/user-management', 'admin/pending-request', 'admin/agent-management') ? 'menu-is-opening menu-open' : '') }}">
-                    <a href="#" class="nav-link {{ (Request::is('admin/user-management', 'admin/pending-request', 'admin/agent-management') ? 'active' : '') }}" >
+                <li class="nav-item {{ (Request::is('admin/user-management', 'admin/pending-request', 'admin/agent-management', 'admin/user-detail/*', 'admin/agent-detail/*') ? 'menu-is-opening menu-open' : '') }}">
+                    <a href="#" class="nav-link {{ (Request::is('admin/user-management', 'admin/pending-request', 'admin/agent-management', 'admin/user-detail/*', 'admin/agent-detail/*') ? 'active' : '') }}" >
                         <i class="nav-icon fas fa-user"></i>
                         <p>
                             User Management
@@ -52,7 +53,7 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ route('user.index') }}" class="nav-link {{ (Request::is('admin/user-management', 'admin/pending-request' ) ? 'active' : '') }}">
+                            <a href="{{ route('user.index') }}" class="nav-link {{ (Request::is('admin/user-management', 'admin/pending-request', 'admin/user-detail/*' ) ? 'active' : '') }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>User</p>
                             </a>
@@ -60,7 +61,7 @@
                     </ul>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ route('agent.index') }}" class="nav-link {{ (Request::is('admin/agent-management' ) ? 'active' : '') }}">
+                            <a href="{{ route('agent.index') }}" class="nav-link {{ (Request::is('admin/agent-management', 'admin/agent-detail/*' ) ? 'active' : '') }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Agent</p>
                             </a>
