@@ -49,18 +49,12 @@
                         <li class="nav-item">
                             <a href=""
                                 class="nav-link {{ (Request::is('admin/event-draft')? 'active' : '' )}} ">
-                                Event Target
+                                Event Target & Budget ROI
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href=""
-                                class="nav-link {{ (Request::is('admin/event-draft')? 'active' : '' )}} ">
-                                Event Budget ROI
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href=""
-                                class="nav-link {{ (Request::is('admin/event-draft')? 'active' : '' )}} ">
+                            <a href="{{ route('event.progress.reward', $data->id) }}"
+                                class="nav-link {{ (Request::is('admin/event-progress-reward/*')? 'active' : '' )}} ">
                                 Event Rewards 
                             </a>
                         </li>

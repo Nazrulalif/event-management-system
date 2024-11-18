@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Event;
+use App\Models\Event_reward;
 use App\Models\Event_schedule;
 use App\Models\User;
 use Carbon\Carbon;
@@ -262,6 +263,80 @@ class EventController extends Controller
         return redirect()->back()->with('success', 'Schedules saved successfully!');
     }
 
+    public function reward($id)
+    {
+        $data = Event::findOrFail($id);
+        $reward = Event_reward::where('event_guid', $id)->first();
+        if (!$reward) {
+            // Handle the case where no reward is found.
+            // You can either pass an empty object or create a new reward entry if you want.
+            $reward = new Event_reward();
+            $reward->event_guid = $id;  // Ensure the new reward has the correct event_guid
+            $reward->prize = json_encode([
+                'internal' => ['first' => '', 'second' => '', 'third' => ''],
+                'external' => ['first' => '', 'second' => '', 'third' => ''],
+            ]);
+            $reward->condition = json_encode([
+                'internal' => '',
+                'external' => '',
+            ]);
+        }
+        return view('admin.event.reward', compact('data', 'reward'));
+    }
+
+    public function reward_update(Request $request, $id)
+    {
+        // Validate the input data
+        $request->validate([
+            'prizes.internal.first' => 'required|numeric',
+            'prizes.internal.second' => 'required|numeric',
+            'prizes.internal.third' => 'required|numeric',
+            'conditions.internal' => 'required|string',
+            'prizes.external.first' => 'required|numeric',
+            'prizes.external.second' => 'required|numeric',
+            'prizes.external.third' => 'required|numeric',
+            'conditions.external' => 'required|string',
+        ]);
+
+        // Prepare the prize and condition data
+        $data = [
+            'event_guid' => $id, // Make sure you're using the event id
+            'prize' => json_encode([
+                'internal' => [
+                    'first' => $request->input('prizes.internal.first'),
+                    'second' => $request->input('prizes.internal.second'),
+                    'third' => $request->input('prizes.internal.third'),
+                ],
+                'external' => [
+                    'first' => $request->input('prizes.external.first'),
+                    'second' => $request->input('prizes.external.second'),
+                    'third' => $request->input('prizes.external.third'),
+                ]
+            ]),
+            'condition' => json_encode([
+                'internal' => $request->input('conditions.internal'),
+                'external' => $request->input('conditions.external')
+            ]),
+        ];
+
+        // Check if the event reward already exists for this event
+        $eventReward = Event_reward::where('event_guid', $id)->first();
+
+        if ($eventReward) {
+            // If the EventReward exists, update it
+            $eventReward->update($data);
+            $message = 'Event rewards updated successfully.';
+        } else {
+            // If the EventReward does not exist, create a new one
+            Event_reward::create($data);
+            $message = 'Event rewards created successfully.';
+        }
+
+        // Redirect back with the success message
+        return redirect()->route('event.progress.reward', $id)
+            ->with('success', $message);
+    }
+
 
     public function checkProgress_main($eventId)
     {
@@ -284,6 +359,21 @@ class EventController extends Controller
 
         // Define the completion criteria
         $isComplete = $event->day_name && $event->event_date && $event->activity;
+
+        return response()->json(['complete' =>  $isComplete]);
+    }
+
+    public function checkProgress_reward($eventId)
+    {
+        // Attempt to find the event schedule by event_guid
+        $event = Event_reward::where('event_guid', $eventId)->first();
+
+        if ($event == null) {
+            return response()->json(['complete' =>  null]);
+        }
+
+        // Define the completion criteria
+        $isComplete = $event->prize && $event->condition;
 
         return response()->json(['complete' =>  $isComplete]);
     }

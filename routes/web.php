@@ -91,6 +91,10 @@ route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/event-progress-schedule/{id}', [EventController::class, 'schedule'])->name('event.progress.schedule');
     Route::post('/event-progress/schedule-update/{id}', [EventController::class, 'schedule_update'])->name('event.schedule.update');
     Route::get('/events/{id}/check-progress-schedule', [EventController::class, 'checkProgress_schedule']);
+
+    Route::get('/event-progress-reward/{id}', [EventController::class, 'reward'])->name('event.progress.reward');
+    Route::post('/event-progress-reward-update/{id}', [EventController::class, 'reward_update'])->name('event.reward.update');
+    Route::get('/events/{id}/check-progress-reward', [EventController::class, 'checkProgress_reward']);
 });
 
 route::middleware(['auth', 'web', 'staff'])->group(function () {
