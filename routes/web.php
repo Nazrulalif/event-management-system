@@ -74,7 +74,6 @@ route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/agent-detail/{id}', [AgentController::class, 'detail'])->name('agent.detail');
     Route::post('/agent-detail-update/{id}', [AgentController::class, 'update'])->name('agent.detail.update');
 
-
     //event Management
     Route::get('/event-management', [EventController::class, 'index'])->name('event.index');
     Route::delete('/event-management/delete/{id}', [EventController::class, 'delete'])->name('event.delete');
@@ -83,6 +82,13 @@ route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::post('/event-management/approve/{id}', [EventController::class, 'approve'])->name('event.approve');
     Route::get('/event-draft', [EventController::class, 'draft'])->name('event.draft');
     Route::get('/event-detail/{id}', [EventController::class, 'detail'])->name('calendar.detail');
+
+    Route::get('/event-progress-main/{id}', [EventController::class, 'edit'])->name('event.progress');
+
+    Route::PUT('/event-progress/main-update/{id}', [EventController::class, 'main_update'])->name('event.progress.main');
+    Route::get('/events/{id}/check-progress-main', [EventController::class, 'checkProgress_main']);
+
+    Route::get('/event-progress-schedule/{id}', [EventController::class, 'schedule'])->name('event.progress.schedule');
 });
 
 route::middleware(['auth', 'web', 'staff'])->group(function () {

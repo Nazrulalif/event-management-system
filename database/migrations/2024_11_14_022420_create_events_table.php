@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('event_title');
-            $table->string('poster_path');
+            $table->string('poster_path')->nullable();
             $table->string('platform')->nullable();
             $table->longText('objective')->nullable();
             $table->string('segment')->default('Consumer');

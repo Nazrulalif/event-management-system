@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Event;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class CalendarController extends Controller
 {
@@ -64,6 +66,60 @@ class CalendarController extends Controller
         } catch (\Exception $e) {
             // Return an error response if something goes wrong
             return response()->json(['message' => 'Error deleting event.'], 500);
+        }
+    }
+
+
+    public function store(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'title' => 'required',
+            'start_date' => 'required',
+            'end_date' => 'required',
+            'start_time' => 'required',
+            'end_time' => 'required',
+            'platform' => 'required',
+            'objective' => 'required',
+        ]);
+
+        try {
+            $startDate = Carbon::parse($request->start_date); // Parse the start date
+            $endDate = Carbon::parse($request->end_date);
+            // Calculate the difference in days
+            $periodCount = $startDate->diffInDays($endDate);
+            // Handle file upload if there is a poster
+            $posterPath = null;
+            if ($request->hasFile('poster')) {
+                $file = $request->file('poster');
+                $extension = $file->getClientOriginalExtension();
+                $uniqueFileName = time() . '_' . uniqid() . '.' . $extension;
+
+                // Use Storage::put to store the file in the 'posters' folder
+                $posterPath = 'posters/' . $uniqueFileName;
+
+                // Put the file in the 'public' disk (storage/app/public)
+                Storage::put($posterPath, file_get_contents($file));
+            }
+
+            // Create the event
+            $event = Event::create([
+                'event_title' => $request->title,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date,
+                'start_time' => $request->start_time,
+                'end_time' => $request->end_time,
+                'platform' => $request->platform,
+                'objective' => $request->objective,
+                'poster_path' => $posterPath ? $posterPath : null,
+                'period' => $periodCount,
+                'status' => 'Draft',
+                'created_by' => Auth::user()->id,
+            ]);
+
+            return redirect()->route('event.progress', $event->id)->with('success', 'Event added successfully.');
+        } catch (\Exception $th) {
+            return redirect()->back()->with('error', 'Event add failed: ' . $th->getMessage());
         }
     }
 }

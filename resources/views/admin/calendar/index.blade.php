@@ -7,13 +7,14 @@
     @include('layouts.content-header')
     <!-- /.content-header -->
     @include('admin.calendar.modal-detail')
+    @include('admin.calendar.modal-add')
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-3">
                     <div class="pb-3">
-                        <button class="btn btn-block btn-primary">Add New Event</button>
+                        <button class="btn btn-block btn-primary" data-toggle="modal" data-target="#modalAdd">Add New Event</button>
                     </div>
                     <div class="sticky-top mb-3">
                         <div class="card">

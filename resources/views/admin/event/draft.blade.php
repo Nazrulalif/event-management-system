@@ -46,12 +46,9 @@
                     render: function (data, type, row) {
                         return `
                             <div>
-                                <a type="button" title="View" class="btn btn-primary btn-sm">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <button title="approve" class="btn btn-info btn-sm edit" data-id="${row.id}">
+                                <a href='/admin/event-progress-main/${row.id}' title="Edit" class="btn btn-info btn-sm">
                                     <i class="fas fa-edit"></i>
-                                </button>
+                                </a>
                                 <button title="Delete" class="btn btn-danger btn-sm delete" data-id="${row.id}">
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
