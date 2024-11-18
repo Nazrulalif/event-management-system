@@ -112,7 +112,7 @@ class CalendarController extends Controller
                 'platform' => $request->platform,
                 'objective' => $request->objective,
                 'poster_path' => $posterPath ? $posterPath : null,
-                'period' => $periodCount,
+                'period' => $periodCount + 1,
                 'status' => 'Draft',
                 'created_by' => Auth::user()->id,
             ]);

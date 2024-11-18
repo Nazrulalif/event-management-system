@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Event;
+use App\Models\Event_schedule;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -191,7 +192,7 @@ class EventController extends Controller
                 'platform' => $request->platform,
                 'objective' => $request->objective,
                 'poster_path' => $posterPath, // Save the updated poster path
-                'period' => $periodCount,
+                'period' => $periodCount + 1,
                 'status' => 'Draft',
                 'created_by' => Auth::user()->id,
             ]);
@@ -205,8 +206,62 @@ class EventController extends Controller
     public function schedule($id)
     {
         $data = Event::findOrFail($id);
-        return view('admin.event.schedule', compact('data'));
+        $existingSchedules = Event_schedule::join('events', 'events.id', '=', 'event_schedules.event_guid')
+            ->where('event_schedules.event_guid', $id)
+            ->get();
+        $startDate = \Carbon\Carbon::parse($data->start_date); // Use Carbon to work with dates
+        $endDate = \Carbon\Carbon::parse($data->end_date);
+        return view('admin.event.schedule', compact('data', 'existingSchedules', 'startDate', 'endDate'));
     }
+
+    public function schedule_update(Request $request, $id)
+    {
+        // Validate the incoming request
+        $validated = $request->validate([
+            'schedules.*.day_name' => 'required|string',
+            'schedules.*.target' => 'required|integer',
+            'schedules.*.business_zone' => 'required|string',
+            'schedules.*.event_vanue' => 'required|string',
+            'schedules.*.date' => 'required|date',
+            'schedules.*.activities.*.time' => 'required|date_format:H:i',
+            'schedules.*.activities.*.description' => 'required|string|max:255',
+        ]);
+
+
+        // Fetch the event
+        $event = Event::findOrFail($id);
+
+        // Check if the "Clear Schedule" button was clicked
+        if ($request->has('clear_schedule')) {
+            // Fetch the event by ID and delete all schedules related to this event
+            $event = Event::findOrFail($id);
+            $event->schedules()->delete();
+
+            return redirect()->back()->with('success', 'All schedules have been cleared.');
+        }
+
+        // Iterate over the schedules and save them
+        foreach ($validated['schedules'] as $scheduleData) {
+            // Check if the schedule already exists for the given day_name and date
+            $existingSchedule = $event->schedules()->where('day_name', $scheduleData['day_name'])
+                ->where('event_date', $scheduleData['date'])
+                ->first();
+
+            if (!$existingSchedule) {
+                $event->schedules()->create([
+                    'day_name' => $scheduleData['day_name'],
+                    'event_date' => $scheduleData['date'],
+                    'target' => $scheduleData['target'],
+                    'business_zone' => $scheduleData['business_zone'],
+                    'event_vanue' => $scheduleData['event_vanue'],
+                    'activity' => json_encode($scheduleData['activities'])
+                ]);
+            }
+        }
+
+        return redirect()->back()->with('success', 'Schedules saved successfully!');
+    }
+
 
     public function checkProgress_main($eventId)
     {
@@ -216,5 +271,20 @@ class EventController extends Controller
         $isComplete = $event->event_title && $event->start_date && $event->end_date && $event->objective && $event->platform;
 
         return response()->json(['complete' => $isComplete]);
+    }
+
+    public function checkProgress_schedule($eventId)
+    {
+        // Attempt to find the event schedule by event_guid
+        $event = Event_schedule::where('event_guid', $eventId)->first();
+
+        if ($event == null) {
+            return response()->json(['complete' =>  null]);
+        }
+
+        // Define the completion criteria
+        $isComplete = $event->day_name && $event->event_date && $event->activity;
+
+        return response()->json(['complete' =>  $isComplete]);
     }
 }

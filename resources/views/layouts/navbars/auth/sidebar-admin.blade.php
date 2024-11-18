@@ -69,7 +69,7 @@
                     </ul>
                 </li>
                 <li class="nav-item ">
-                    <a href="{{ route('event.index') }}" class="nav-link {{ (Request::is('admin/event-management') ? 'active' : '') }}" >
+                    <a href="{{ route('event.index') }}" class="nav-link {{ (Request::is('admin/event-management', 'admin/event-progress-main/*', 'admin/event-progress-schedule/*') ? 'active' : '') }}" >
                         <i class="nav-icon fas fa-calendar-plus"></i>
                         <p>
                             Event Management

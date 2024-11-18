@@ -29,4 +29,9 @@ class Event extends Model
     ];
 
     protected $dates = ['start_date', 'end_date'];
+
+    public function schedules()
+    {
+        return $this->hasMany(Event_schedule::class, 'event_guid', 'id');
+    }
 }
