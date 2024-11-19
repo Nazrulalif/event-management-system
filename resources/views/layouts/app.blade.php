@@ -7,8 +7,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>EventMS</title>
     <link rel="icon" href="{{asset('assets\img\eventms.png')}}">
-        <!-- Other head content -->
-    
+    <!-- Other head content -->
+
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -37,6 +37,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <!-- fullCalendar -->
     <link rel="stylesheet" href="{{asset('plugins/fullcalendar/main.css')}}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
         .required::after {
             content: '*';
@@ -56,6 +58,34 @@
         @auth
         @yield('auth')
         @endauth
+        @if($errors->any())
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                toastr.options = {
+                    "closeButton": true,
+                    "debug": false,
+                    "newestOnTop": false,
+                    "progressBar": true,
+                    "preventDuplicates": false,
+                    "onclick": null,
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "5000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                };
+
+                // Trigger Toastr for each error
+                @foreach($errors->all() as $error)
+                toastr.error("{{ $error }}");
+                @endforeach
+            });
+
+        </script>
+        @endif
 
         @if(session('success') || session('error'))
         <script>
@@ -111,9 +141,11 @@
     <script src="{{asset('plugins/datatables-buttons/js/buttons.colVis.min.js')}}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-     <!-- fullCalendar 2.2.5 -->
-  <script src="{{asset('plugins/moment/moment.min.js')}}"></script>
-  <script src="{{asset('plugins/fullcalendar/main.js')}}"></script>
+    <!-- fullCalendar 2.2.5 -->
+    <script src="{{asset('plugins/moment/moment.min.js')}}"></script>
+    <script src="{{asset('plugins/fullcalendar/main.js')}}"></script>
+    <!-- ChartJS -->
+    <script src="{{asset('plugins/chart.js/Chart.min.js')}}"></script>
 
 </body>
 

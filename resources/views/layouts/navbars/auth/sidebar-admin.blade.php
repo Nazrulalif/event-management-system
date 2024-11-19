@@ -1,4 +1,3 @@
-
 <aside class="main-sidebar elevation-4 sidebar-light-primary" style="background-color: #f4f6f9">
     <!-- Brand Logo -->
     <a href="" class="brand-link" style="background-color: #ffffff">
@@ -10,9 +9,9 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <!-- Sidebar user panel (optional) -->
-        <div class="user-panel mt-3 pb-3 mb-3 d-flex align-items-center">
-            <div class="image">
-                <img src="{{asset('assets\img\avatar.png')}}" class="img-circle elevation-2" alt="User Image">
+        <div class="offset-1 mt-3 pb-3 mb-3 d-flex align-items-center" style="overflow: hidden; white-space: nowrap;position: relative;">
+            <div class="image mr-3">
+                <img class="rounded-circle img-sm elevation-2" style="object-fit: cover;" src="{{Auth::user()->profile_picture ? asset('storage/' . Auth::user()->profile_picture )  : asset('assets/img/avatar.png') }}" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
                 <div class="d-block">{{Auth::user()->name}}</div>
@@ -26,7 +25,7 @@
                 <!-- Add icons to the links using the .nav-icon class
              with font-awesome or any other icon font library -->
                 <li class="nav-item">
-                    <a href="{{route("dashboard.admin")}}" class="nav-link {{ (Request::is('admin/dashboard') ? 'active' : '') }}" >
+                    <a href="{{route("dashboard.admin")}}" class="nav-link {{ (Request::is('admin/dashboard', 'admin/my-profile') ? 'active' : '') }}" >
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>
                             Dashboard
@@ -41,15 +40,14 @@
                         </p>
                     </a>
                 </li>
-                <span class="pl-3 py-3 fw-bold text-uppercase " style="opacity: .8"> Setup</span>
+                <li class="nav-header text-uppercase">Setup</li>
                 <li class="nav-item {{ (Request::is('admin/user-management', 'admin/pending-request', 'admin/agent-management', 'admin/user-detail/*', 'admin/agent-detail/*') ? 'menu-is-opening menu-open' : '') }}">
                     <a href="#" class="nav-link {{ (Request::is('admin/user-management', 'admin/pending-request', 'admin/agent-management', 'admin/user-detail/*', 'admin/agent-detail/*') ? 'active' : '') }}" >
                         <i class="nav-icon fas fa-user"></i>
                         <p>
                             User Management
+                            <i class="fas fa-angle-left right"></i>
                         </p>
-                        <i class="right fas fa-angle-left"></i>
-
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
@@ -69,7 +67,7 @@
                     </ul>
                 </li>
                 <li class="nav-item ">
-                    <a href="{{ route('event.index') }}" class="nav-link {{ (Request::is('admin/event-management', 'admin/event-progress-main/*', 'admin/event-progress-schedule/*') ? 'active' : '') }}" >
+                    <a href="{{ route('event.index') }}" class="nav-link {{ (Request::is('admin/event-management', 'admin/event-pending', 'admin/event-draft','admin/event-progress-main/*', 'admin/event-progress-schedule/*') ? 'active' : '') }}" >
                         <i class="nav-icon fas fa-calendar-plus"></i>
                         <p>
                             Event Management
@@ -77,7 +75,7 @@
                     </a>
                      
                 </li>
-                <span class="px-3 py-3 fw-bold text-uppercase " style="opacity: .8"> Report</span>
+                <li class="nav-header text-uppercase">Report</li>
                 <li class="nav-item">
                     <a href="" class="nav-link {{ (Request::is('admin/') ? 'active' : '') }}" >
                         <i class="nav-icon fas fa-file-alt"></i>
@@ -86,9 +84,9 @@
                         </p>
                     </a>
                 </li>
-                <span class="px-3 py-3 fw-bold text-uppercase " style="opacity: .8"> Sign out</span>
+                <li class="nav-header text-uppercase">Sign out</li>
                 <li class="nav-item">
-                    <a href="" class="nav-link {{ (Request::is('admin/') ? 'active' : '') }}" >
+                    <a href="{{ route('logout') }}" class="nav-link" >
                         <i class="nav-icon fas fa-sign-out-alt"></i>
                         <p>
                             Sign out

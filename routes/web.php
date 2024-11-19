@@ -47,6 +47,7 @@ route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.admin');
     Route::get('/my-profile', [MyProfileController::class, 'index'])->name('profile.admin');
     Route::post('/my-profile-update', [MyProfileController::class, 'update'])->name('profile.admin.update');
+    Route::post('/my-profile-change-password', [MyProfileController::class, 'change_password'])->name('profile.admin.password');
 
     //calendar
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');

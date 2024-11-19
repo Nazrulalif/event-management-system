@@ -1,10 +1,30 @@
-<div class="card h-100">
+<div class="card">
     <div class="card-header">
         <div class="card-title">Settings</div>
     </div>
     <div class="card-body">
         <form class="form-horizontal" method="POST" action="{{ route('profile.admin.update') }}" enctype="multipart/form-data" autocomplete="off">
             @csrf
+            <div class="form-group row">
+                <label for="" class="col-sm-2 col-form-label required">Profile Picture</label>
+
+                <div class="col-sm-10 d-flex">
+                    <div class="d-flex mb-4">
+                        <img id="selectedAvatar" src="{{Auth::user()->profile_picture ? asset('storage/' . Auth::user()->profile_picture )  : asset('assets/img/avatar.png') }}"
+                        class="rounded-circle img-lg" style="object-fit: cover;" alt="example placeholder" />
+
+                        <div class="d-flex ml-3 align-self-center">
+                            <div data-mdb-ripple-init class="btn btn-outline-secondary btn-sm btn-rounded">
+                                <label class="form-label m-1 cursor-pointer" for="customFile2">Choose file</label>
+                                <input type="file" class="form-control d-none" id="customFile2" name="profile_picture" onchange="displaySelectedImage(event, 'selectedAvatar')" />
+                            </div>
+                        </div>
+
+                        
+                    </div>
+
+                </div>
+            </div>
             <div class="form-group row">
                 <label for="" class="col-sm-2 col-form-label required">Name</label>
                 <div class="col-sm-10">
@@ -80,3 +100,48 @@
         </form>
     </div>
 </div>
+
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">Change Password</div>
+    </div>
+    <div class="card-body">
+        <form action="{{ route('profile.admin.password') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+        @csrf
+        <div class="form-group row">
+            <label for="" class="col-sm-2 col-form-label required">New Password</label>
+            <div class="col-sm-10">
+                <input type="password" class="form-control" name="password" required>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="" class="col-sm-2 col-form-label required">Confirmation Password</label>
+            <div class="col-sm-10">
+                <input type="password" class="form-control" name="password_confirmation" required>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="offset-sm-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function displaySelectedImage(event, elementId) {
+    const selectedImage = document.getElementById(elementId);
+    const fileInput = event.target;
+
+    if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            selectedImage.src = e.target.result;
+        };
+
+        reader.readAsDataURL(fileInput.files[0]);
+    }
+}
+</script>
