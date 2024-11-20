@@ -9,7 +9,6 @@
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="#">Administrator</a></li>
                     <li class="breadcrumb-item active">
                         {{ str_replace(['admin/', '-'], ' ', preg_replace('/\/[a-f0-9\-]+$/i', '', Request::path())) }}
                     </li>

@@ -99,6 +99,11 @@ route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/event-progress-reward/{id}', [EventController::class, 'reward'])->name('event.progress.reward');
     Route::post('/event-progress-reward-update/{id}', [EventController::class, 'reward_update'])->name('event.reward.update');
     Route::get('/events/{id}/check-progress-reward', [EventController::class, 'checkProgress_reward']);
+
+    Route::get('/event-progress-target/{id}', [EventController::class, 'target'])->name('event.progress.target');
+    Route::post('/event-progress-target-update/{id}', [EventController::class, 'target_update'])->name('event.target.update');
+    Route::delete('/event-progress-target-delete/{id}', [EventController::class, 'target_delete'])->name('event.target.delete');
+    Route::get('/events/{id}/check-progress-target', [EventController::class, 'checkProgress_target']);
 });
 
 route::middleware(['auth', 'web', 'staff'])->group(function () {

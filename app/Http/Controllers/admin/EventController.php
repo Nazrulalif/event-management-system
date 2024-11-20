@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\Event_reward;
 use App\Models\Event_schedule;
+use App\Models\Event_target;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -337,6 +338,82 @@ class EventController extends Controller
             ->with('success', $message);
     }
 
+    public function target($id)
+    {
+        $data = Event::findOrFail($id);
+
+        $products = [
+            'UNIFI FIXED ONLY',
+            'UNIFI FIXED WITH MOBILE (FMC)',
+            'UNIFI FIXED WITH MOBILE AND DEVICE (FMC)',
+            'UNIFI FIXED WITH MOBILE AND ENTERTAINMENT (FMCC)',
+            'UNIFI FIXED WITH ENTERTAINMENT (FCC)',
+            'WINBACK HSBA',
+            'WINBACK TIME',
+            'UNIFI FIXED WITH LIFESTYLE (FLC)',
+            'UNIBIG POSTPAID 99',
+            'UNIBIG POSTPAID 69',
+            'UNIBIG POSTPAID 99',
+            'UNIBIG POSTPAID FAMILY 129',
+            'UNIBIG POSTPAID FAMILY 159',
+            'UNIBIG POSTPAID FAMILY 189',
+            'UNIBIG WOW 10',
+            'UNIBIG WOW 25',
+            'UNIBIG WOW 35',
+            'UNIBIG POSTPAID 99',
+            'UNIBIG POSTPAID 69',
+            'UNIBIG POSTPAID 99',
+            'UNIBIG POSTPAID FAMILY 129',
+            'UNIBIG POSTPAID FAMILY 159',
+            'UNIBIG POSTPAID FAMILY 189',
+            'UNIBIG WOW 10',
+            'UNIBIG WOW 25',
+            'UNIBIG WOW 35'
+        ];
+
+        $targets = Event_target::where('event_guid', $id)->get();
+
+        return view('admin.event.target', compact('data', 'products', 'targets'));
+    }
+
+    public function target_update(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'products.*.product' => 'required|string',
+            'products.*.arpu' => 'required|numeric|min:0',
+            'products.*.sales_physical_target' => 'required|integer|min:0',
+            'products.*.outbase' => 'required|integer|min:0',
+            'products.*.inbase' => 'required|integer|min:0',
+            'products.*.revenue' => 'required|numeric|min:0',
+        ]);
+
+        // Update existing targets and add new ones
+        foreach ($request->products as $key => $product) {
+            if (!empty($product['id'])) {
+                // Update existing record
+                Event_target::where('id', $product['id'])
+                    ->update($product);
+            } else {
+                // Create a new record
+                Event_target::create(array_merge($product, ['event_guid' => $id]));
+            }
+        }
+
+        return redirect()->back()->with('success', 'Products updated successfully.');
+    }
+
+    public function target_delete($id)
+    {
+        $target = Event_target::find($id);
+        if ($target) {
+            $target->delete();
+            return response()->json(['success' => true, 'message' => 'Record deleted successfully.']);
+        }
+        return response()->json(['success' => false, 'message' => 'Record not found.'], 404);
+    }
+
+
+
 
     public function checkProgress_main($eventId)
     {
@@ -374,6 +451,21 @@ class EventController extends Controller
 
         // Define the completion criteria
         $isComplete = $event->prize && $event->condition;
+
+        return response()->json(['complete' =>  $isComplete]);
+    }
+
+    public function checkProgress_target($eventId)
+    {
+        // Attempt to find the event schedule by event_guid
+        $event = Event_target::where('event_guid', $eventId)->first();
+
+        if ($event == null) {
+            return response()->json(['complete' =>  null]);
+        }
+
+        // Define the completion criteria
+        $isComplete = $event->product && $event->revenue;
 
         return response()->json(['complete' =>  $isComplete]);
     }

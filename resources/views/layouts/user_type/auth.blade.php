@@ -13,9 +13,8 @@
     @include('layouts.navbars.auth.nav')
     <div class="py-0">
         @yield('content')
-    @include('layouts.footers.footer')
-
     </div>
+    @include('layouts.footers.footer')
 
 </main>
 @endsection
