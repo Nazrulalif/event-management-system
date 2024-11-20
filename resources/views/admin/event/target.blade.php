@@ -58,7 +58,8 @@
                         </td>
                         <td>
                             <input type="hidden" name="products[{{ $index }}][id]" value="{{ $target->id }}">
-                            <button type="button" class="btn btn-danger btn-sm delete-row">
+                            <button type="button" class="btn btn-danger btn-sm delete-row" {!! $index===0
+                                ? 'style="display:none"' : '' !!}>
                                 <i class="fas fa-trash"></i>
                             </button>
                         </td>
@@ -89,6 +90,30 @@
                     </tr>
                     @endforelse
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <input type="text" name="total_outbase" id="total_outbase" class="form-control" readonly
+                                value="{{ $targets->sum('outbase') }}">
+                        </td>
+                        <td>
+                            <input type="text" name="total_inbase" id="total_inbase" class="form-control" readonly
+                                value="{{ $targets->sum('inbase') }}">
+                        </td>
+                        <td>
+                            <input type="text" name="total_target" id="total_target" class="form-control" readonly
+                                value="{{ $targets->sum('sales_physical_target') }}">
+                        </td>
+                        <td>
+                            <input type="text" name="total_revenue" id="total_revenue" class="form-control" readonly
+                                value="{{ $targets->sum('revenue') }}">
+                        </td>
+                        <td></td>
+                    </tr>
+                </tfoot>
             </table>
             <button type="button" class="btn btn-primary btn-sm" id="addRow">Add Row</button>
         </div>
@@ -105,16 +130,17 @@
 <script>
     $(document).ready(function () {
         const progressContainer = $('#progressContainer');
-        const eventId = @json($data->id); // Safely include the event ID
+        const eventId = @json($data->id);
+        const deletedIds = []; // Array to store IDs of deleted rows
 
         if (!eventId) {
             console.error('Event ID is missing.');
             progressContainer.html(`
-                <div class="d-flex flex-row align-items-center text-danger">
-                    <i class="far fa-times-circle text-danger"></i>
-                    <span class="ml-1">Error</span>
-                </div>
-            `);
+            <div class="d-flex flex-row align-items-center text-danger">
+                <i class="far fa-times-circle text-danger"></i>
+                <span class="ml-1">Error</span>
+            </div>
+        `);
             return;
         }
 
@@ -127,28 +153,28 @@
                 success: function (data) {
                     if (data.complete) {
                         progressContainer.html(`
-                            <div class="d-flex flex-row align-items-center text-md">
-                                <i class="far fa-check-circle text-success"></i>
-                                <span class="text-success ml-1">Complete</span>
-                            </div>
-                        `);
+                        <div class="d-flex flex-row align-items-center text-md">
+                            <i class="far fa-check-circle text-success"></i>
+                            <span class="text-success ml-1">Complete</span>
+                        </div>
+                    `);
                     } else {
                         progressContainer.html(`
-                            <div class="d-flex flex-row align-items-center text-danger">
-                                <i class="far fa-times-circle text-danger"></i>
-                                <span class="ml-1">Incomplete</span>
-                            </div>
-                        `);
+                        <div class="d-flex flex-row align-items-center text-danger">
+                            <i class="far fa-times-circle text-danger"></i>
+                            <span class="ml-1">Incomplete</span>
+                        </div>
+                    `);
                     }
                 },
                 error: function (xhr, status, error) {
                     console.error('Error checking progress:', error);
                     progressContainer.html(`
-                        <div class="d-flex flex-row align-items-center text-danger">
-                            <i class="far fa-times-circle text-danger"></i>
-                            <span class="ml-1">Error</span>
-                        </div>
-                    `);
+                    <div class="d-flex flex-row align-items-center text-danger">
+                        <i class="far fa-times-circle text-danger"></i>
+                        <span class="ml-1">Error</span>
+                    </div>
+                `);
                 }
             });
         };
@@ -156,7 +182,43 @@
         // Check progress on page load
         checkProgress();
 
-        let rowCount = 1;
+        let rowCount = $('.product-row').length;
+
+        function calculateTotals() {
+            let totalOutbase = 0;
+            let totalInbase = 0;
+            let totalTarget = 0;
+            let totalRevenue = 0;
+
+            $('.product-row').each(function () {
+                // Calculate row totals
+                const outbase = parseFloat($(this).find('input[name*="[outbase]"]').val()) || 0;
+                const inbase = parseFloat($(this).find('input[name*="[inbase]"]').val()) || 0;
+                const revenue = parseFloat($(this).find('input[name*="[revenue]"]').val()) || 0;
+                const target = outbase + inbase;
+
+                // Update the sales physical target for this row
+                $(this).find('input[name*="[sales_physical_target]"]').val(target);
+
+                // Add to totals
+                totalOutbase += outbase;
+                totalInbase += inbase;
+                totalTarget += target;
+                totalRevenue += revenue;
+            });
+
+            // Update footer fields with formatted numbers
+            $('#total_outbase').val(totalOutbase.toFixed(2));
+            $('#total_inbase').val(totalInbase.toFixed(2));
+            $('#total_target').val(totalTarget.toFixed(2));
+            $('#total_revenue').val(totalRevenue.toFixed(2));
+        }
+
+        // Recalculate on any input change
+        $(document).on('input', '.product-row input', function () {
+            calculateTotals();
+        });
+
 
         // Add new row
         $('#addRow').click(function () {
@@ -171,7 +233,7 @@
             newRow.find('select, input').each(function () {
                 const name = $(this).attr('name');
                 if (name) {
-                    $(this).attr('name', name.replace('[0]', `[${rowCount-1}]`));
+                    $(this).attr('name', name.replace(/\[\d+\]/, `[${rowCount-1}]`));
                 }
             });
 
@@ -181,94 +243,42 @@
             // Show delete button
             newRow.find('.delete-row').show();
 
+            // Remove any existing hidden id field
+            newRow.find('input[name*="[id]"]').remove();
+
             $('#productTable tbody').append(newRow);
         });
 
+        // Delete row
         $(document).on('click', '.delete-row', function () {
-            const row = $(this).closest('tr');
-            const recordId = row.find('input[name*="[id]"]').val();
-            // Check if only one row exists
-            if ($('#productTable tbody tr').length === 1) {
-                    Swal.fire(
-                        'Error!',
-                        'At least one row must remain in the table.',
-                        'warning'
-                    );
-                    return; // Exit if only one row exists
+            if ($('.product-row').length > 1) {
+                const row = $(this).closest('tr');
+                const idInput = row.find('input[name*="[id]"]');
+
+                // If row has an ID, add it to deletedIds array
+                if (idInput.length && idInput.val()) {
+                    deletedIds.push(idInput.val());
                 }
 
-            // Show SweetAlert confirmation
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "This action cannot be undone!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, delete it!',
-                cancelButtonText: 'No, cancel!',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    if (recordId) {
-                        // If the row exists in the database, send a delete request
-                        $.ajax({
-                            url: `/admin/event-progress-target-delete/${recordId}`,
-                            type: 'DELETE',
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
-                                    'content') // CSRF token for Laravel
-                            },
-                            success: function (response) {
-                                if (response.success) {
-                                    row.remove();
-                                    updateRowNumbers();
-                                    Swal.fire(
-                                        'Deleted!',
-                                        'The record has been deleted.',
-                                        'success'
-                                    );
-                                } else {
-                                    Swal.fire(
-                                        'Error!',
-                                        response.message ||
-                                        'Unable to delete the record.',
-                                        'error'
-                                    );
-                                }
-                            },
-                            error: function (xhr) {
-                                Swal.fire(
-                                    'Error!',
-                                    'An error occurred while trying to delete the record.',
-                                    'error'
-                                );
-                            }
-                        });
-                    } else {
-                        // If the row doesn't exist in the database, simply remove it
-                        row.remove();
-                        updateRowNumbers();
-                        Swal.fire(
-                            'Deleted!',
-                            'The row has been removed.',
-                            'success'
-                        );
-                    }
-                }
-            });
+                row.remove();
+                updateRowNumbers();
+                calculateTotals();
+
+            }
         });
 
-        // Update row numbers after deletion
+        // Update row numbers and input names after deletion
         function updateRowNumbers() {
-            $('.row-number').each(function (index) {
-                $(this).text(index + 1);
-            });
-        }
+            $('.product-row').each(function (index) {
+                $(this).find('.row-number').text(index + 1);
 
-
-        // Update row numbers
-        function updateRowNumbers() {
-            $('.row-number').each(function (index) {
-                $(this).text(index + 1);
+                // Update all input and select names to maintain sequential indexes
+                $(this).find('select, input').each(function () {
+                    const name = $(this).attr('name');
+                    if (name) {
+                        $(this).attr('name', name.replace(/\[\d+\]/, `[${index}]`));
+                    }
+                });
             });
         }
 
@@ -282,6 +292,14 @@
             row.find('input[name*="[sales_physical_target]"]').val(outbase + inbase);
         });
 
+        // Add hidden input for deleted IDs before form submission
+        $('#productForm').on('submit', function () {
+            if (deletedIds.length > 0) {
+                deletedIds.forEach(id => {
+                    $(this).append(`<input type="hidden" name="deleted_ids[]" value="${id}">`);
+                });
+            }
+        });
     });
 
 </script>

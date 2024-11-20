@@ -53,8 +53,8 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href=""
-                                class="nav-link {{ (Request::is('admin/event-draft')? 'active' : '' )}} ">
+                            <a href="{{ route('event.progress.budget', $data->id) }}"
+                                class="nav-link {{ (Request::is('admin/event-progress-budget/*')? 'active' : '' )}} ">
                                 Event Budget
                             </a>
                         </li>

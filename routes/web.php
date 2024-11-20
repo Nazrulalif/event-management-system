@@ -104,6 +104,10 @@ route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::post('/event-progress-target-update/{id}', [EventController::class, 'target_update'])->name('event.target.update');
     Route::delete('/event-progress-target-delete/{id}', [EventController::class, 'target_delete'])->name('event.target.delete');
     Route::get('/events/{id}/check-progress-target', [EventController::class, 'checkProgress_target']);
+
+    Route::get('/event-progress-budget/{id}', [EventController::class, 'budget'])->name('event.progress.budget');
+    Route::post('/event-progress-budget-update/{id}', [EventController::class, 'budget_update'])->name('event.budget.update');
+    Route::get('/events/{id}/check-progress-budget', [EventController::class, 'checkProgress_budget']);
 });
 
 route::middleware(['auth', 'web', 'staff'])->group(function () {

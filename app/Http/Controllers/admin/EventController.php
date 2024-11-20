@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Budget_item;
 use App\Models\Event;
+use App\Models\Event_budget;
 use App\Models\Event_reward;
 use App\Models\Event_schedule;
 use App\Models\Event_target;
@@ -11,6 +13,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -387,19 +390,47 @@ class EventController extends Controller
             'products.*.revenue' => 'required|numeric|min:0',
         ]);
 
-        // Update existing targets and add new ones
-        foreach ($request->products as $key => $product) {
-            if (!empty($product['id'])) {
-                // Update existing record
-                Event_target::where('id', $product['id'])
-                    ->update($product);
-            } else {
-                // Create a new record
-                Event_target::create(array_merge($product, ['event_guid' => $id]));
-            }
-        }
+        try {
+            DB::beginTransaction();
 
-        return redirect()->back()->with('success', 'Products updated successfully.');
+            // Delete removed records if any
+            if ($request->has('deleted_ids')) {
+                Event_target::whereIn('id', $request->deleted_ids)->delete();
+            }
+
+            // Update existing targets and add new ones
+            foreach ($request->products as $key => $product) {
+                if (!empty($product['id'])) {
+                    // Update existing record
+                    Event_target::where('id', $product['id'])
+                        ->update([
+                            'product' => $product['product'],
+                            'arpu' => $product['arpu'],
+                            'sales_physical_target' => $product['sales_physical_target'],
+                            'outbase' => $product['outbase'],
+                            'inbase' => $product['inbase'],
+                            'revenue' => $product['revenue'],
+                        ]);
+                } else {
+                    // Create a new record
+                    Event_target::create([
+                        'product' => $product['product'],
+                        'arpu' => $product['arpu'],
+                        'sales_physical_target' => $product['sales_physical_target'],
+                        'outbase' => $product['outbase'],
+                        'inbase' => $product['inbase'],
+                        'revenue' => $product['revenue'],
+                        'event_guid' => $id
+                    ]);
+                }
+            }
+
+            DB::commit();
+            return redirect()->back()->with('success', 'Products updated successfully.');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->with('error', 'Failed to update products: ' . $e->getMessage())->withInput();
+        }
     }
 
     public function target_delete($id)
@@ -412,8 +443,74 @@ class EventController extends Controller
         return response()->json(['success' => false, 'message' => 'Record not found.'], 404);
     }
 
+    public function budget($id)
+    {
+        $data = Event::findOrFail($id); // Fetch the event
+        $budget = Event_budget::where('event_guid', $id)
+            ->with('budget_items')
+            ->select('*')
+            ->first();
 
+        return view('admin.event.budget', compact('data', 'budget'));
+    }
 
+    public function budget_update($id, Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            // Check if budget exists for this event
+            $budget = Event_budget::where('event_guid', $id)->first();
+
+            if (!$budget) {
+                // Create new budget
+                $budget = Event_budget::create([
+                    'event_guid' => $id,
+                    'total' => $request->total,
+                    'fee_percent' => $request->fee_percent,
+                    'fee' => $request->fee,
+                    'tax_percent' => $request->tax_percent,
+                    'tax' => $request->tax,
+                    'grand_total' => $request->grand_total,
+                ]);
+            } else {
+                // Update existing budget
+                $budget->update([
+                    'total' => $request->total,
+                    'fee_percent' => $request->fee_percent,
+                    'fee' => $request->fee,
+                    'tax_percent' => $request->tax_percent,
+                    'tax' => $request->tax,
+                    'grand_total' => $request->grand_total,
+                ]);
+
+                // Delete existing budget items
+                Budget_item::where('budget_guid', $budget->id)->delete();
+            }
+
+            // Create budget items
+            if (isset($request->items) && is_array($request->items)) {
+                foreach ($request->items as $item) {
+                    Budget_item::create([
+                        'budget_guid' => $budget->id,
+                        'description' => $item['description'],
+                        'days' => $item['days'],
+                        'frequency' => $item['frequency'],
+                        'price_per_unit' => $item['price_per_unit'],
+                        'total_budget' => $item['total_budget'],
+                        'remark' => $item['remark'],
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Budget data has been saved successfully!');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->with('error', 'Failed to save budget data. ' . $e->getMessage())->withInput();
+        }
+    }
 
     public function checkProgress_main($eventId)
     {
@@ -466,6 +563,21 @@ class EventController extends Controller
 
         // Define the completion criteria
         $isComplete = $event->product && $event->revenue;
+
+        return response()->json(['complete' =>  $isComplete]);
+    }
+
+    public function checkProgress_budget($eventId)
+    {
+        // Attempt to find the event schedule by event_guid
+        $event = Event_budget::where('event_guid', $eventId)->first();
+
+        if ($event == null) {
+            return response()->json(['complete' =>  null]);
+        }
+
+        // Define the completion criteria
+        $isComplete = $event->total && $event->grand_total;
 
         return response()->json(['complete' =>  $isComplete]);
     }
