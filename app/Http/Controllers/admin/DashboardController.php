@@ -54,7 +54,8 @@ class DashboardController extends Controller
             'totalEventReject',
             'approved',
             'pending',
-            'rejected'
+            'rejected',
+            'currentYear'
         ));
     }
 }

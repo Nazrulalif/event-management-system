@@ -80,7 +80,7 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <div class="card-title">Event Summary</div>
+                            <div class="card-title">Event Summary {{ $currentYear }}</div>
                         </div>
                         <div class="card-body">
                             <div class="chart">

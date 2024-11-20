@@ -19,7 +19,7 @@
 </head>
 
 <body >
-    <div class="hold-transition login-page">
+    <div class="hold-transition login-page" style="background-image: url({{ asset('assets/img/bg9.jpg') }})">
         @yield('content')
     </div>
 </body>

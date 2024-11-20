@@ -3,13 +3,13 @@
 @section('content')
 
 <div class="login-logo">
-  <img src="{{ asset('assets/img/eventms.png') }}" class="w-25 w-md-75 w-lg-50" alt="...">
+  <img src="{{ asset('assets/img/eventms-white.png') }}" class="w-25 w-md-75 w-lg-50" alt="...">
 
 
 </div>
 <!-- /.login-logo -->
 <div class="card">
-    <div class="card-body login-card-body">
+    <div class="card-body login-card-body rounded-lg">
 
         @if(session()->has('error'))
         <div class="alert alert-danger" style="color: white">{{ session('error') }}</div>

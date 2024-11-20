@@ -13,14 +13,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
+|---------------------------------------------------------------------------
+|                  2024
+|                 Credits
+|---------------------------------------------------------------------------
+| Developed by Muhammad Nazrul Alif
+| GitHub: https://github.com/Nazrulalif/
+| Website: https://nazrulalif.vercel.app/
+| WhatsApp: 014-9209024
 |
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
+| Feel free to explore and contribute to this project!
+|---------------------------------------------------------------------------
 */
 
 Route::get('/', function () {
