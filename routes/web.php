@@ -108,6 +108,20 @@ route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/event-progress-budget/{id}', [EventController::class, 'budget'])->name('event.progress.budget');
     Route::post('/event-progress-budget-update/{id}', [EventController::class, 'budget_update'])->name('event.budget.update');
     Route::get('/events/{id}/check-progress-budget', [EventController::class, 'checkProgress_budget']);
+
+    Route::get('/event-progress-staff-grouping/{id}', [EventController::class, 'staff'])->name('event.progress.staff');
+    Route::post('/event-progress-staff-grouping-update/{id}', [EventController::class, 'staff_update'])->name('event.staff.update');
+    Route::delete('/event-progress-staff-grouping-delete/{id}', [EventController::class, 'staff_delete'])->name('event.staff.delete');
+    Route::get('/event-progress-staff-grouping-show/{id}', [EventController::class, 'staff_show'])->name('event.staff.show');
+    Route::post('/event-progress-staff-grouping-edit-update', [EventController::class, 'staff_edit_update'])->name('event.staff.editUpdate');
+    Route::get('/events/{id}/check-progress-staff', [EventController::class, 'checkProgress_staff']);
+
+    Route::get('/event-progress-agent-grouping/{id}', [EventController::class, 'agent'])->name('event.progress.agent');
+    Route::post('/event-progress-agent-grouping-update/{id}', [EventController::class, 'agent_update'])->name('event.agent.update');
+    Route::delete('/event-progress-agent-grouping-delete/{id}', [EventController::class, 'agent_delete'])->name('event.agent.delete');
+    Route::get('/event-progress-agent-grouping-show/{id}', [EventController::class, 'agent_show'])->name('event.agent.show');
+    Route::post('/event-progress-agent-grouping-edit-update', [EventController::class, 'staff_agent_update'])->name('event.agent.editUpdate');
+    Route::get('/events/{id}/check-progress-agent', [EventController::class, 'checkProgress_agent']);
 });
 
 route::middleware(['auth', 'web', 'staff'])->group(function () {

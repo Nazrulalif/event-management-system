@@ -3,12 +3,18 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Agent;
+use App\Models\Agent_group;
+use App\Models\Agent_member;
+use App\Models\AgentMember_Group;
 use App\Models\Budget_item;
 use App\Models\Event;
 use App\Models\Event_budget;
 use App\Models\Event_reward;
 use App\Models\Event_schedule;
 use App\Models\Event_target;
+use App\Models\Staff_group;
+use App\Models\StaffMember_group;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -16,6 +22,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Str;
 
 class EventController extends Controller
 {
@@ -202,7 +209,7 @@ class EventController extends Controller
                 'created_by' => Auth::user()->id,
             ]);
 
-            return redirect()->back()->with('success', 'Event updated successfully.');
+            return redirect()->route('event.progress.schedule', $id)->with('success', 'Event updated successfully.');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Event update failed: ' . $th->getMessage());
         }
@@ -264,13 +271,14 @@ class EventController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', 'Schedules saved successfully!');
+        return redirect()->route('event.progress.staff', $id)->with('success', 'Schedules saved successfully!');
     }
 
     public function reward($id)
     {
         $data = Event::findOrFail($id);
         $reward = Event_reward::where('event_guid', $id)->first();
+
         if (!$reward) {
             // Handle the case where no reward is found.
             // You can either pass an empty object or create a new reward entry if you want.
@@ -285,7 +293,24 @@ class EventController extends Controller
                 'external' => '',
             ]);
         }
-        return view('admin.event.reward', compact('data', 'reward'));
+
+        $isReward = Event_reward::where('event_guid', $id)->count();
+        $isSchedule = Event_schedule::where('event_guid', $id)->count();
+        $isStaff = Staff_group::where('event_guid', $id)->count();
+        $isAgent = Agent_group::where('event_guid', $id)->count();
+        $isTarget = Event_target::where('event_guid', $id)->count();
+        $isBudget = Event_budget::where('event_guid', $id)->count();
+        $isComplete = false;
+        if ($isReward >= 1 && $isAgent  >=  1 &&  $isBudget  >=  1 && $isSchedule  >=  1 && $isStaff  >=  1 && $isTarget  >=  1) {
+            $isComplete = true;
+        }
+
+
+        return view('admin.event.reward', compact(
+            'data',
+            'reward',
+            'isComplete'
+        ));
     }
 
     public function reward_update(Request $request, $id)
@@ -301,6 +326,15 @@ class EventController extends Controller
             'prizes.external.third' => 'required|numeric',
             'conditions.external' => 'required|string',
         ]);
+
+        if ($request->isComplete) {
+            $event = Event::findOrFail($id);
+            $event->update([
+                'status' => 'Approve'
+            ]);
+
+            return redirect()->route('calendar.index')->with('success', 'The event has been successfully added to the calendar.');
+        }
 
         // Prepare the prize and condition data
         $data = [
@@ -426,7 +460,7 @@ class EventController extends Controller
             }
 
             DB::commit();
-            return redirect()->back()->with('success', 'Products updated successfully.');
+            return redirect()->route('event.progress.budget', $id)->with('success', 'Products updated successfully.');
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->back()->with('error', 'Failed to update products: ' . $e->getMessage())->withInput();
@@ -505,11 +539,314 @@ class EventController extends Controller
 
             DB::commit();
 
-            return redirect()->back()->with('success', 'Budget data has been saved successfully!');
+            return redirect()->route('event.progress.reward', $id)->with('success', 'Budget data has been saved successfully!');
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->back()->with('error', 'Failed to save budget data. ' . $e->getMessage())->withInput();
         }
+    }
+
+    public function staff($id, Request $request)
+    {
+
+        if ($request->ajax()) {
+            // Fetch groups with mentors, leaders, and members
+            $data = Staff_group::select(
+                'staff_groups.id as id',
+                'staff_groups.group_name',
+                'staff_groups.vehicle',
+                'mentors.name as mentor_name',
+                'leaders.name as leader_name',
+                'staff_groups.created_at'
+            )
+                ->join('users as mentors', 'staff_groups.mentor', '=', 'mentors.id')
+                ->join('users as leaders', 'staff_groups.leader', '=', 'leaders.id')
+                ->where('staff_groups.event_guid', $id)
+                ->with(['members' => function ($query) {
+                    $query->select('users.id', 'users.name');
+                }])
+                ->with(['agent_members' => function ($query) {
+                    $query->select('agents.id', 'agents.name');
+                }])
+                ->get();
+
+            // Format the data for DataTables
+            return DataTables::of($data)
+                ->addColumn('members', function ($data) {
+                    // Extract member names and join them with commas
+                    $members = $data->members->pluck('name')->toArray();
+                    $agent = $data->agent_members->pluck('name')->toArray();
+                    $allMembers = array_merge($members, $agent);
+                    return implode(', ', $allMembers);
+                })
+                ->editColumn('created_at', function ($data) {
+                    return $data->created_at->format('d/m/Y');
+                })
+                ->rawColumns(['actions']) // Allow raw HTML for actions column
+                ->make(true);
+        }
+        $data = Event::findOrFail($id); // Fetch the event
+        $mentor = User::all();
+        $leader = User::where('team', 'Sales Operation MKU (SO MKU) ')->orwhere('team', 'Sales Operation MKS (SO MKS)')->get();
+        $member = User::where('team', '!=', 'Sales Operation MKU (SO MKU) ')->where('team', '!=', 'Sales Operation MKS (SO MKS)')->get();
+        $nextar = Agent::where('channel', 'Nextstar')->get();
+
+        return view('admin.event.staff', compact(
+            'data',
+            'mentor',
+            'leader',
+            'member',
+            'nextar',
+        ));
+    }
+
+    public function staff_update(Request $request, $id)
+    {
+
+        // Validate the request
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'mentor' => 'required|exists:users,id', // Ensure the mentor exists in the users table
+            'vehicle' => 'required|string|max:255',
+            'leader' => 'required|exists:users,id', // Ensure the leader exists in the users table
+            'member' => 'required|array', // Member is an array
+            'member.*' => 'exists:users,id', // Each member ID should exist in the users table
+            'nextar' => 'nullable|array', // Member is an array
+            'nextar.*' => 'exists:agents,id', // Each member ID should exist in the users table
+        ]);
+
+        // Create the group
+        $group = Staff_group::create([
+            'event_guid' => $id,
+            'group_name' => $request->name,
+            'mentor' => $request->mentor, // Get the mentor's name
+            'vehicle' => $request->vehicle,
+            'leader' => $request->leader,
+        ]);
+
+        // Add the selected members to the group
+        foreach ($request->member as $memberId) {
+            StaffMember_group::create([
+                'group_guid' => $group->id,
+                'staff_guid' => $memberId,
+            ]);
+        }
+
+        if ($request->nextar) {
+            // Add the selected members to the group
+            foreach ($request->nextar as $agentId) {
+                AgentMember_Group::create([
+                    'group_guid' => $group->id,
+                    'agent_guid' => $agentId,
+                ]);
+            }
+        }
+
+        // Redirect back with a success message
+        return redirect()->route('event.progress.staff', $id)
+            ->with('success', 'Group and members added successfully!');
+    }
+
+    public function staff_delete($id)
+    {
+        $event = Staff_group::find($id);
+        if ($event) {
+            $event->delete(); // Delete the user request
+            return response()->json(['message' => 'Group deleted successfully']);
+        }
+        return response()->json(['message' => 'Group not found'], 404);
+    }
+
+    public function staff_show($id)
+    {
+        $group = Staff_group::findOrFail($id);
+
+        return response()->json([
+            'group_name' => $group->group_name,
+            'mentor' => $group->mentor,
+            'leader' => $group->leader,
+            'vehicle' => $group->vehicle,
+            'members' => $group->members->pluck('id'), // Return member IDs
+            'nextar' => $group->agent_members->pluck('id')
+        ]);
+    }
+
+    public function agent($id, Request $request)
+    {
+
+        if ($request->ajax()) {
+            // Fetch groups with mentors, leaders, and members
+            $data = Agent_group::select(
+                'agent_groups.id as id',
+                'users.name as nazir',
+                'agent_groups.created_at'
+            )
+                ->join('users', 'users.id', '=', 'agent_groups.nazir')
+                ->where('agent_groups.event_guid', $id)
+                ->with(['members' => function ($query) {
+                    $query->select('agents.id', 'agents.name');
+                }])
+                ->get();
+
+            // Format the data for DataTables
+            return DataTables::of($data)
+                ->addColumn('members', function ($data) {
+                    // Extract member names and join them with commas
+                    $members = $data->members->pluck('name')->toArray();
+                    return implode(', ', $members);
+                })
+                ->editColumn('created_at', function ($data) {
+                    return $data->created_at->format('d/m/Y');
+                })
+                ->rawColumns(['actions']) // Allow raw HTML for actions column
+                ->make(true);
+        }
+        $data = Event::findOrFail($id); // Fetch the event
+        $nazir = User::where('team', 'Sales Operation MKU (SO MKU) ')->orwhere('team', 'Sales Operation MKS (SO MKS)')->get();
+        $member = Agent::where('channel', '=', 'Rovers')->orWhere('channel', '=', 'Agents (UCA/UCP)')->get();
+
+        return view('admin.event.agent', compact(
+            'data',
+            'nazir',
+            'member',
+        ));
+    }
+
+    public function agent_delete($id)
+    {
+        $event = Agent_group::find($id);
+        if ($event) {
+            $event->delete(); // Delete the user request
+            return response()->json(['message' => 'Group deleted successfully']);
+        }
+        return response()->json(['message' => 'Group not found'], 404);
+    }
+
+    public function agent_show($id)
+    {
+        $group = Agent_group::findOrFail($id);
+
+        return response()->json([
+            'nazir' => $group->nazir,
+            'members' => $group->members->pluck('id'), // Return member IDs
+        ]);
+    }
+
+    public function staff_agent_update(Request $request)
+    {
+        $request->validate([
+            'nazir' => 'required|exists:users,id',
+            'member' => 'required|array',
+            'member.*' => 'exists:agents,id',
+        ]);
+
+        // Update the group
+        $group = Agent_group::findOrFail($request->id);
+        $group->update([
+            'nazir' => $request->nazir,
+        ]);
+
+        DB::table('agent_members')
+            ->where('group_guid', $group->id)
+            ->delete();
+        // Insert new members
+        foreach ($request->member as $memberId) {
+            DB::table('agent_members')->insert([
+                'id' => Str::uuid(), // Generate a new UUID
+                'group_guid' => $group->id,
+                'agent_guid' => $memberId,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+        }
+
+        return redirect()->back()
+            ->with('success', 'Group and members updated successfully!');
+    }
+
+    public function agent_update(Request $request, $id)
+    {
+
+
+        // Validate the request
+        $request->validate([
+            'nazir' => 'required|exists:users,id', // Ensure the mentor exists in the users table
+            'member' => 'required|array', // Member is an array
+            'member.*' => 'exists:agents,id', // Each member ID should exist in the users table
+
+        ]);
+
+        // Create the group
+        $group = Agent_group::create([
+            'event_guid' => $id,
+            'nazir' => $request->nazir, // Get the mentor's name
+        ]);
+
+        // Add the selected members to the group
+        foreach ($request->member as $memberId) {
+            Agent_member::create([
+                'group_guid' => $group->id,
+                'agent_guid' => $memberId,
+            ]);
+        }
+
+        // Redirect back with a success message
+        return redirect()->route('event.progress.agent', $id)
+            ->with('success', 'Group and members added successfully!');
+    }
+
+    public function staff_edit_update(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'mentor' => 'required|exists:users,id',
+            'leader' => 'required|exists:users,id',
+            'vehicle' => 'required|string',
+            'member' => 'required|array',
+            'member.*' => 'exists:users,id',
+        ]);
+
+        // Update the group
+        $group = Staff_group::findOrFail($request->id);
+        $group->update([
+            'group_name' => $request->name,
+            'mentor' => $request->mentor,
+            'leader' => $request->leader,
+            'vehicle' => $request->vehicle,
+        ]);
+
+        DB::table('staff_member_groups')
+            ->where('group_guid', $group->id)
+            ->delete();
+
+        DB::table('agent_member_groups')
+            ->where('group_guid', $group->id)
+            ->delete();
+
+
+        // Insert new members
+        foreach ($request->member as $memberId) {
+            DB::table('staff_member_groups')->insert([
+                'id' => Str::uuid(), // Generate a new UUID
+                'group_guid' => $group->id,
+                'staff_guid' => $memberId,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+        }
+
+        foreach ($request->nextar as $agentId) {
+            DB::table('agent_member_groups')->insert([
+                'id' => Str::uuid(), // Generate a new UUID
+                'group_guid' => $group->id,
+                'agent_guid' => $agentId,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+        }
+
+        return redirect()->back()
+            ->with('success', 'Group and members updated successfully!');
     }
 
     public function checkProgress_main($eventId)
@@ -578,6 +915,36 @@ class EventController extends Controller
 
         // Define the completion criteria
         $isComplete = $event->total && $event->grand_total;
+
+        return response()->json(['complete' =>  $isComplete]);
+    }
+
+    public function checkProgress_staff($eventId)
+    {
+        // Attempt to find the event schedule by event_guid
+        $event = Staff_group::where('event_guid', $eventId)->first();
+
+        if ($event == null) {
+            return response()->json(['complete' =>  null]);
+        }
+
+        // Define the completion criteria
+        $isComplete = $event->group_name && $event->mentor;
+
+        return response()->json(['complete' =>  $isComplete]);
+    }
+
+    public function checkProgress_agent($eventId)
+    {
+        // Attempt to find the event schedule by event_guid
+        $event = Agent_group::where('event_guid', $eventId)->first();
+
+        if ($event == null) {
+            return response()->json(['complete' =>  null]);
+        }
+
+        // Define the completion criteria
+        $isComplete = $event->nazir;
 
         return response()->json(['complete' =>  $isComplete]);
     }

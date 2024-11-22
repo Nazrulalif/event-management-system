@@ -39,6 +39,8 @@
     <link rel="stylesheet" href="{{asset('plugins/fullcalendar/main.css')}}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <link rel="stylesheet" href="{{asset('plugins/select2/css/select2.min.css')}}">
+    <link rel="stylesheet" href="{{asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
     <style>
         .required::after {
             content: '*';
@@ -47,6 +49,9 @@
             /* Sets the color to red */
             margin-left: 4px;
             /* Adds a small space between the label and the asterisk */
+        }
+        .select2-container--default .select2-selection--multiple .select2-selection__choice{
+            background-color: #077BFF;
         }
 
     </style>
@@ -146,7 +151,8 @@
     <script src="{{asset('plugins/fullcalendar/main.js')}}"></script>
     <!-- ChartJS -->
     <script src="{{asset('plugins/chart.js/Chart.min.js')}}"></script>
-
+    <!-- Select2 -->
+    <script src="{{asset('plugins/select2/js/select2.full.min.js')}}"></script>
 </body>
 
 </html>

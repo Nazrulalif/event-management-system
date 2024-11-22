@@ -54,7 +54,7 @@
                         </td>
                         <td>
                             <input type="number" name="products[{{ $index }}][revenue]" class="form-control"
-                                value="{{ $target->revenue }}">
+                                value="{{ $target->revenue }}" readonly>
                         </td>
                         <td>
                             <input type="hidden" name="products[{{ $index }}][id]" value="{{ $target->id }}">
@@ -136,11 +136,11 @@
         if (!eventId) {
             console.error('Event ID is missing.');
             progressContainer.html(`
-            <div class="d-flex flex-row align-items-center text-danger">
-                <i class="far fa-times-circle text-danger"></i>
-                <span class="ml-1">Error</span>
-            </div>
-        `);
+                <div class="d-flex flex-row align-items-center text-danger">
+                    <i class="far fa-times-circle text-danger"></i>
+                    <span class="ml-1">Error</span>
+                </div>
+            `);
             return;
         }
 
@@ -153,28 +153,28 @@
                 success: function (data) {
                     if (data.complete) {
                         progressContainer.html(`
-                        <div class="d-flex flex-row align-items-center text-md">
-                            <i class="far fa-check-circle text-success"></i>
-                            <span class="text-success ml-1">Complete</span>
-                        </div>
-                    `);
+                            <div class="d-flex flex-row align-items-center text-md">
+                                <i class="far fa-check-circle text-success"></i>
+                                <span class="text-success ml-1">Complete</span>
+                            </div>
+                        `);
                     } else {
                         progressContainer.html(`
-                        <div class="d-flex flex-row align-items-center text-danger">
-                            <i class="far fa-times-circle text-danger"></i>
-                            <span class="ml-1">Incomplete</span>
-                        </div>
-                    `);
+                            <div class="d-flex flex-row align-items-center text-danger">
+                                <i class="far fa-times-circle text-danger"></i>
+                                <span class="ml-1">Incomplete</span>
+                            </div>
+                        `);
                     }
                 },
                 error: function (xhr, status, error) {
                     console.error('Error checking progress:', error);
                     progressContainer.html(`
-                    <div class="d-flex flex-row align-items-center text-danger">
-                        <i class="far fa-times-circle text-danger"></i>
-                        <span class="ml-1">Error</span>
-                    </div>
-                `);
+                        <div class="d-flex flex-row align-items-center text-danger">
+                            <i class="far fa-times-circle text-danger"></i>
+                            <span class="ml-1">Error</span>
+                        </div>
+                    `);
                 }
             });
         };
@@ -184,6 +184,22 @@
 
         let rowCount = $('.product-row').length;
 
+        // Function to calculate revenue for each row
+        function calculateRowRevenue(row) {
+            const arpu = parseFloat(row.find('.arpu-input').val()) || 0;
+            const outbase = parseFloat(row.find('.outbase').val()) || 0;
+            const inbase = parseFloat(row.find('.inbase').val()) || 0;
+            const target = outbase + inbase;
+
+            // Update Sales Physical Target
+            row.find('input[name*="[sales_physical_target]"]').val(target);
+
+            // Calculate and update Annualized Revenue
+            const revenue = arpu * target;
+            row.find('input[name*="[revenue]"]').val(revenue.toFixed(2));
+        }
+
+        // Function to calculate totals across all rows
         function calculateTotals() {
             let totalOutbase = 0;
             let totalInbase = 0;
@@ -191,14 +207,16 @@
             let totalRevenue = 0;
 
             $('.product-row').each(function () {
-                // Calculate row totals
-                const outbase = parseFloat($(this).find('input[name*="[outbase]"]').val()) || 0;
-                const inbase = parseFloat($(this).find('input[name*="[inbase]"]').val()) || 0;
-                const revenue = parseFloat($(this).find('input[name*="[revenue]"]').val()) || 0;
+                const row = $(this);
+                const outbase = parseFloat(row.find('.outbase').val()) || 0;
+                const inbase = parseFloat(row.find('.inbase').val()) || 0;
+                const arpu = parseFloat(row.find('.arpu-input').val()) || 0;
                 const target = outbase + inbase;
 
-                // Update the sales physical target for this row
-                $(this).find('input[name*="[sales_physical_target]"]').val(target);
+                // Update row-level target and revenue
+                row.find('input[name*="[sales_physical_target]"]').val(target);
+                const revenue = arpu * target;
+                row.find('input[name*="[revenue]"]').val(revenue.toFixed(2));
 
                 // Add to totals
                 totalOutbase += outbase;
@@ -207,46 +225,48 @@
                 totalRevenue += revenue;
             });
 
-            // Update footer fields with formatted numbers
+            // Update footer totals
             $('#total_outbase').val(totalOutbase.toFixed(2));
             $('#total_inbase').val(totalInbase.toFixed(2));
             $('#total_target').val(totalTarget.toFixed(2));
             $('#total_revenue').val(totalRevenue.toFixed(2));
         }
 
-        // Recalculate on any input change
-        $(document).on('input', '.product-row input', function () {
+        // Recalculate when ARPU, Outbase, or Inbase changes
+        $(document).on('input', '.arpu-input, .outbase, .inbase', function () {
+            const row = $(this).closest('.product-row');
+            calculateRowRevenue(row);
             calculateTotals();
         });
-
 
         // Add new row
         $('#addRow').click(function () {
             rowCount++;
             const newRow = $('.product-row').first().clone();
 
-            // Clear inputs
+            // Clear inputs in the new row
             newRow.find('input').val('');
             newRow.find('select').val('');
 
-            // Update names and IDs
+            // Update names and IDs for the new row
             newRow.find('select, input').each(function () {
                 const name = $(this).attr('name');
                 if (name) {
-                    $(this).attr('name', name.replace(/\[\d+\]/, `[${rowCount-1}]`));
+                    $(this).attr('name', name.replace(/\[\d+\]/, `[${rowCount - 1}]`));
                 }
             });
 
             // Update row number
             newRow.find('.row-number').text(rowCount);
 
-            // Show delete button
+            // Show delete button for the new row
             newRow.find('.delete-row').show();
 
             // Remove any existing hidden id field
             newRow.find('input[name*="[id]"]').remove();
 
             $('#productTable tbody').append(newRow);
+            calculateTotals();  // Recalculate totals after adding a row
         });
 
         // Delete row
@@ -263,7 +283,6 @@
                 row.remove();
                 updateRowNumbers();
                 calculateTotals();
-
             }
         });
 
@@ -282,16 +301,6 @@
             });
         }
 
-        // Calculate Sales Physical Target
-        $(document).on('input', '.outbase, .inbase', function () {
-            const row = $(this).closest('tr');
-            const outbase = parseFloat(row.find('input[name*="[outbase]"]').val()) || 0;
-            const inbase = parseFloat(row.find('input[name*="[inbase]"]').val()) || 0;
-
-            // Update Sales Physical Target field
-            row.find('input[name*="[sales_physical_target]"]').val(outbase + inbase);
-        });
-
         // Add hidden input for deleted IDs before form submission
         $('#productForm').on('submit', function () {
             if (deletedIds.length > 0) {
@@ -300,7 +309,10 @@
                 });
             }
         });
-    });
 
+        // Initial calculation on page load
+        calculateTotals();
+    });
 </script>
+
 @endsection

@@ -19,7 +19,7 @@
             </div>
             <div class="d-flex justify-content-end ">
                 <div class="callout callout-danger w-1">
-                    <div class="text-bold">Status: <span class="font-weight-normal text-danger">Draft</span></div>
+                    <div class="text-bold">Status: <span class="font-weight-normal {{ $data->status=='Approve'? 'text-success' : 'text-danger' }} ">{{ $data->status }}</span></div>
                   </div>
             </div>
             <div class="card">
@@ -41,9 +41,15 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href=""
-                                class="nav-link {{ (Request::is('admin/event-draft')? 'active' : '' )}} ">
-                                Event Participants & Grouping
+                            <a href="{{ route('event.progress.staff', $data->id) }}"
+                                class="nav-link {{ (Request::is('admin/event-progress-staff-grouping/*')? 'active' : '' )}} ">
+                                Event Staff Grouping
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('event.progress.agent', $data->id) }}"
+                                class="nav-link {{ (Request::is('admin/event-progress-agent-grouping/*')? 'active' : '' )}} ">
+                                Event Agent Grouping
                             </a>
                         </li>
                         <li class="nav-item">

@@ -8,38 +8,40 @@
 </div>
 
 <div class="container">
-    <form action="{{ route('event.reward.update', $data->id) }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+    <form action="{{ route('event.reward.update', $data->id) }}" method="POST" enctype="multipart/form-data"
+        autocomplete="off">
         @csrf
-        
+
         <div class="row">
             <!-- Internal Prize Section -->
             <div class="col-md-6">
                 <h5>Internal Category</h5>
                 <div class="form-group">
                     <label for="internal_first_prize">First Prize</label>
-                    <input type="number" name="prizes[internal][first]" id="internal_first_prize" class="form-control" 
-                           placeholder="Amount" required 
-                           value="{{ old('prizes.internal.first', json_decode($reward->prize, true)['internal']['first'] ?? '') }}">
+                    <input type="number" name="prizes[internal][first]" id="internal_first_prize" class="form-control"
+                        placeholder="Amount" required
+                        value="{{ old('prizes.internal.first', json_decode($reward->prize, true)['internal']['first'] ?? '') }}">
                 </div>
 
                 <div class="form-group">
                     <label for="internal_second_prize">Second Prize</label>
-                    <input type="number" name="prizes[internal][second]" id="internal_second_prize" class="form-control" 
-                           placeholder="Amount" required 
-                           value="{{ old('prizes.internal.second', json_decode($reward->prize, true)['internal']['second'] ?? '') }}">
+                    <input type="number" name="prizes[internal][second]" id="internal_second_prize" class="form-control"
+                        placeholder="Amount" required
+                        value="{{ old('prizes.internal.second', json_decode($reward->prize, true)['internal']['second'] ?? '') }}">
                 </div>
 
                 <div class="form-group">
                     <label for="internal_third_prize">Third Prize</label>
-                    <input type="number" name="prizes[internal][third]" id="internal_third_prize" class="form-control" 
-                           placeholder="Amount" required 
-                           value="{{ old('prizes.internal.third', json_decode($reward->prize, true)['internal']['third'] ?? '') }}">
+                    <input type="number" name="prizes[internal][third]" id="internal_third_prize" class="form-control"
+                        placeholder="Amount" required
+                        value="{{ old('prizes.internal.third', json_decode($reward->prize, true)['internal']['third'] ?? '') }}">
                 </div>
 
                 <div class="form-group">
                     <label for="internal_condition">Conditions</label>
-                    <textarea name="conditions[internal]" id="internal_condition" rows="4" class="form-control" 
-                              placeholder="Terms and conditions to win the internal prize" required>{{ old('conditions.internal', json_decode($reward->condition, true)['internal'] ?? '') }}</textarea>
+                    <textarea name="conditions[internal]" id="internal_condition" rows="4" class="form-control"
+                        placeholder="Terms and conditions to win the internal prize"
+                        required>{{ old('conditions.internal', json_decode($reward->condition, true)['internal'] ?? '') }}</textarea>
                 </div>
             </div>
 
@@ -48,39 +50,48 @@
                 <h5>External Category</h5>
                 <div class="form-group">
                     <label for="external_first_prize">First Prize</label>
-                    <input type="number" name="prizes[external][first]" id="external_first_prize" class="form-control" 
-                           placeholder="Amount" required 
-                           value="{{ old('prizes.external.first', json_decode($reward->prize, true)['external']['first'] ?? '') }}">
+                    <input type="number" name="prizes[external][first]" id="external_first_prize" class="form-control"
+                        placeholder="Amount" required
+                        value="{{ old('prizes.external.first', json_decode($reward->prize, true)['external']['first'] ?? '') }}">
                 </div>
 
                 <div class="form-group">
                     <label for="external_second_prize">Second Prize</label>
-                    <input type="number" name="prizes[external][second]" id="external_second_prize" class="form-control" 
-                           placeholder="Amount" required 
-                           value="{{ old('prizes.external.second', json_decode($reward->prize, true)['external']['second'] ?? '') }}">
+                    <input type="number" name="prizes[external][second]" id="external_second_prize" class="form-control"
+                        placeholder="Amount" required
+                        value="{{ old('prizes.external.second', json_decode($reward->prize, true)['external']['second'] ?? '') }}">
                 </div>
 
                 <div class="form-group">
                     <label for="external_third_prize">Third Prize</label>
-                    <input type="number" name="prizes[external][third]" id="external_third_prize" class="form-control" 
-                           placeholder="Amount" required 
-                           value="{{ old('prizes.external.third', json_decode($reward->prize, true)['external']['third'] ?? '') }}">
+                    <input type="number" name="prizes[external][third]" id="external_third_prize" class="form-control"
+                        placeholder="Amount" required
+                        value="{{ old('prizes.external.third', json_decode($reward->prize, true)['external']['third'] ?? '') }}">
                 </div>
 
                 <div class="form-group">
                     <label for="external_condition">Conditions</label>
-                    <textarea name="conditions[external]" id="external_condition" rows="4" class="form-control" 
-                              placeholder="Terms and conditions to win the external prize" required>{{ old('conditions.external', json_decode($reward->condition, true)['external'] ?? '') }}</textarea>
+                    <textarea name="conditions[external]" id="external_condition" rows="4" class="form-control"
+                        placeholder="Terms and conditions to win the external prize"
+                        required>{{ old('conditions.external', json_decode($reward->condition, true)['external'] ?? '') }}</textarea>
                 </div>
             </div>
-            
+
         </div>
         <div class="form-group">
-            <div class="d-flex justify-content-end">
-                <button type="submit" class="btn btn-primary">Save Changes</button>
+            <div class="d-flex flex-row justify-content-end">
+                <small class="text-muted pb-1">P/s: Please ensure that all the event details are completed to submit all the
+                event details.</small>
+            </div>
+            <div class="d-flex flex-row justify-content-end">
+                <button type="submit" class="btn btn-primary mr-3">Save Changes</button>
+                    <button type="submit" name="isComplete" value="1" class="btn btn-info" {{ $isComplete ? '' : 'disabled' }} >Submit this event</button>
             </div>
         </div>
-    </form>
+        
+</div>
+
+</form>
 </div>
 <script src="{{asset('plugins/jquery/jquery.min.js')}} "></script>
 
