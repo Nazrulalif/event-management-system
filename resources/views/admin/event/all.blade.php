@@ -2,6 +2,8 @@
 
 @section('event-list')
 
+@include('admin.event.edit-event')
+
 <table id="example" class="table table-bordered w-full">
     <thead>
         <tr>
@@ -12,7 +14,7 @@
             <th width='20%'>Created By</th>
             <th>Status</th>
             <th>Created At</th>
-            <th>Actions</th>
+            <th width='15%'>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -31,18 +33,24 @@
             serverSide: true,
             searching: true,
             ordering: true,
-            order: [
-                [0, 'desc']
-            ], // Order by the first column (index 0) in descending order
             autoWidth: false,
             responsive: true,
             ajax: '/admin/event-management',
-            columns: [
-                { data: 'event_title' },
-                { data: 'platform' },
-                { data: 'start_date' },
-                { data: 'end_date' },
-                { data: 'creator_name' },
+            columns: [{
+                    data: 'event_title'
+                },
+                {
+                    data: 'platform'
+                },
+                {
+                    data: 'start_date'
+                },
+                {
+                    data: 'end_date'
+                },
+                {
+                    data: 'creator_name'
+                },
                 {
                     data: 'status',
                     render: function (data, type, row) {
@@ -57,19 +65,51 @@
                         }
                     },
                 },
-                { data: 'created_at' },
+                {
+                    data: 'created_at'
+                },
                 {
                     data: null,
                     render: function (data, type, row) {
-                        return `
-                            <div>
-                                <a type="button" title="View" class="btn btn-primary btn-sm">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <button title="Delete" class="btn btn-danger btn-sm delete" data-id="${row.id}">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </div>`;
+                        // Initialize buttons
+                        let viewButton = `
+                            <a href='/admin/view-event/${row.id}' title="View" class="btn btn-primary btn-sm">
+                                <i class="fas fa-eye"></i>
+                            </a>`;
+
+                        let editButton = '';
+                        let deleteButton = `
+                            <button title="Delete" class="btn btn-danger btn-sm delete" data-id="${row.id}">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>`;
+
+                       
+                    // Get today's date in YYYY-MM-DD format
+                    const today = new Date().toISOString().split('T')[0];
+                    
+                    // Show edit button only if status is 'Approve' and today is before or equal to start_date
+                    if (row.status === 'Approve' && today <= row.start_date) {
+                        editButton = `
+                        <button title="Edit" 
+                            class="btn btn-info btn-sm edit" 
+                            data-id="${row.id}"
+                            data-toggle="modal" 
+                            data-target="#modalEditEvent">
+                            <i class="fas fa-edit"></i>
+                        </button>`;
+                    }else{
+                        editButton = `
+                        <button title="Edit" 
+                            class="btn btn-info btn-sm edit" 
+                            data-id="${row.id}"
+                            data-toggle="modal" 
+                            data-target="#modalEditEvent" disabled>
+                            <i class="fas fa-edit"></i>
+                        </button>`;
+                    }
+
+                        // Combine and return buttons
+                        return `<div>${viewButton} ${editButton} ${deleteButton}</div>`;
                     },
                     orderable: false,
                     searchable: false
@@ -103,7 +143,8 @@
                                 'The event has been deleted.',
                                 'success'
                             );
-                            table.ajax.reload(); // Reload the DataTable to reflect changes
+                            table.ajax
+                                .reload(); // Reload the DataTable to reflect changes
                         },
                         error: function (xhr) {
                             Swal.fire(
@@ -116,7 +157,30 @@
                 }
             });
         });
+
+        $(document).on('click', '.edit', function () {
+            const id = $(this).data('id');
+
+            // Fetch group data via AJAX
+            $.ajax({
+                url: `/admin/event-management/show/${id}`, // Create a route to fetch group data
+                type: 'GET',
+                success: function (response) {
+                    // Populate modal fields with fetched data
+                    $('#modalEditEvent #title').val(response.event_title);
+                    $('#modalEditEvent #startDate').val(response.start_date);
+                    $('#modalEditEvent #endDate').val(response.end_date);
+                    $('#modalEditEvent #start_time').val(response.start_time);
+                    $('#modalEditEvent #end_time').val(response.end_time);
+                    $('#modalEditEvent #id').val(id);
+                },
+                error: function () {
+                    alert('Failed to fetch group data.');
+                }
+            });
+        });
     });
+
 </script>
 
 @endsection

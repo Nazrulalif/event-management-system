@@ -54,6 +54,45 @@ class EventController extends Controller
         return view('admin.event.all', compact('pendingCount'));
     }
 
+    public function show($id)
+    {
+        $event = Event::findOrFail($id);
+
+        return response()->json([
+            'event_title' => $event->event_title,
+            'start_date' => $event->start_date,
+            'end_date' => $event->end_date,
+            'start_time' => $event->start_time,
+            'end_time' => $event->end_time,
+        ]);
+    }
+
+    public function update(Request $request)
+    {
+
+        $event = Event::findOrFail($request->id);
+
+        try {
+            $startDate = Carbon::parse($request->start_date); // Parse the start date
+            $endDate = Carbon::parse($request->end_date);
+            // Calculate the difference in days
+            $periodCount = $startDate->diffInDays($endDate);
+
+            $event->update([
+                'event_title' => $request->title,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date,
+                'start_time' => $request->start_time,
+                'end_time' => $request->end_time,
+                'period' =>  $periodCount + 1
+            ]);
+
+            return redirect()->back()->with('success', 'Event updated successfully.');
+        } catch (\Exception $th) {
+            return redirect()->back()->with('error', 'Event updated Failed.');
+        }
+    }
+
     public function delete($id)
     {
         $event = Event::find($id);

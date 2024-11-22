@@ -6,6 +6,7 @@ use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\EventController;
 use App\Http\Controllers\admin\MyProfileController;
 use App\Http\Controllers\admin\StaffController;
+use App\Http\Controllers\admin\ViewEventController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\staff\HomeController;
 use Illuminate\Support\Facades\Auth;
@@ -80,6 +81,8 @@ route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 
     //event Management
     Route::get('/event-management', [EventController::class, 'index'])->name('event.index');
+    Route::get('/event-management/show/{id}', [EventController::class, 'show'])->name('event.show');
+    Route::post('/event-management/update', [EventController::class, 'update'])->name('event.update');
     Route::delete('/event-management/delete/{id}', [EventController::class, 'delete'])->name('event.delete');
     Route::get('/event-pending', [EventController::class, 'pending'])->name('event.pending');
     Route::post('/event-management/reject/{id}', [EventController::class, 'reject'])->name('event.reject');
@@ -122,6 +125,8 @@ route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/event-progress-agent-grouping-show/{id}', [EventController::class, 'agent_show'])->name('event.agent.show');
     Route::post('/event-progress-agent-grouping-edit-update', [EventController::class, 'staff_agent_update'])->name('event.agent.editUpdate');
     Route::get('/events/{id}/check-progress-agent', [EventController::class, 'checkProgress_agent']);
+
+    Route::get('/view-event/{id}', [ViewEventController::class, 'index'])->name('view.index');
 });
 
 route::middleware(['auth', 'web', 'staff'])->group(function () {

@@ -81,7 +81,7 @@
                         <td><input type="number" name="products[0][inbase]" class="form-control inbase"></td>
                         <td><input type="number" name="products[0][sales_physical_target]" class="form-control"
                                 readonly></td>
-                        <td><input type="number" name="products[0][revenue]" class="form-control"></td>
+                        <td><input type="number" name="products[0][revenue]" class="form-control" readonly></td>
                         <td>
                             <button type="button" class="btn btn-danger btn-sm delete-row" style="display:none">
                                 <i class="fas fa-trash"></i>
