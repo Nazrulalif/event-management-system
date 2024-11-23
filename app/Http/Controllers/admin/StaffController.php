@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\WelcomeEmail;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Str;
 
@@ -47,7 +49,7 @@ class StaffController extends Controller
         $generatedPassword = Str::random(10);
 
         try {
-            User::create([
+            $user = User::create([
                 'name' => $request->name,
                 'gender' => $request->gender,
                 'email' => $request->email,
@@ -57,6 +59,10 @@ class StaffController extends Controller
                 'is_approve' => "Y",
                 'team' => $request->team,
             ]);
+
+            // Send the welcome email
+            Mail::to($user->email)->queue(new WelcomeEmail($user, $generatedPassword));
+
 
             return redirect()->back()->with('success', "User registration success.");
         } catch (\Exception $th) {
@@ -100,10 +106,13 @@ class StaffController extends Controller
     {
         $user = User::find($id);
         if ($user) {
+            $newPassword = Str::random(8);
             $user->is_active = 'Y';
             $user->is_approve = 'Y';
+            $user->password = Hash::make($newPassword);
             $user->save();
 
+            Mail::to($user->email)->queue(new WelcomeEmail($user, $newPassword));
             return response()->json(['message' => 'User approved successfully'], 200);
         }
         return response()->json(['message' => 'User not found'], 404);

@@ -169,8 +169,7 @@
                 $('#createdBy').text(event.extendedProps.creator_name || '');
                 $('#deleteEventBtn').data('event-id', event.id);
                 var eventId = info.event.id;
-                var detailUrl = '/admin/event-detail/' +
-                eventId; // Adjust with your route structure
+                var detailUrl = '/admin/view-event/' +eventId; // Adjust with your route structure
 
                 $('#eventModal').find('#viewDetail').attr('href', detailUrl);
 

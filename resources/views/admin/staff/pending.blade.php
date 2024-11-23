@@ -41,7 +41,7 @@
                     render: function (data, type, row) {
                         return `
                             <div>
-                                <a type="button" title="View" class="btn btn-primary btn-sm">
+                                <a href="/admin/user-detail/${row.id}" title="View" class="btn btn-primary btn-sm">
                                     <i class="fas fa-eye"></i>
                                 </a>
                                 <button title="Accept" class="btn btn-success btn-sm accept" data-id="${row.id}">

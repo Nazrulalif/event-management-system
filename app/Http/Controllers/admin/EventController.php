@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\EventApprovedEmail;
+use App\Mail\EventRescheduleEmail;
 use App\Models\Agent;
 use App\Models\Agent_group;
 use App\Models\Agent_member;
@@ -20,6 +22,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Str;
@@ -87,6 +90,14 @@ class EventController extends Controller
                 'period' =>  $periodCount + 1
             ]);
 
+            // Get all users to send the email to
+            $users = User::where('is_approve', 'Y')->where('is_active', 'Y')->get(); // Modify this if you want to filter users
+
+            // Loop through all users and send the event approval email
+            foreach ($users as $user) {
+                Mail::to($user->email)->queue(new EventRescheduleEmail($event));
+            }
+
             return redirect()->back()->with('success', 'Event updated successfully.');
         } catch (\Exception $th) {
             return redirect()->back()->with('error', 'Event updated Failed.');
@@ -133,11 +144,23 @@ class EventController extends Controller
     public function approve($id)
     {
         $event = Event::find($id);
+
         if ($event) {
+            // Update event status to "Approve"
             $event->status = 'Approve';
             $event->save();
-            return response()->json(['message' => 'Event request approved successfully']);
+
+            // Get all users to send the email to
+            $users = User::where('is_approve', 'Y')->where('is_active', 'Y')->get(); // Modify this if you want to filter users
+
+            // Loop through all users and send the event approval email
+            foreach ($users as $user) {
+                Mail::to($user->email)->queue(new EventApprovedEmail($event));
+            }
+
+            return response()->json(['message' => 'Event request approved successfully, notifications sent to all users.']);
         }
+
         return response()->json(['message' => 'Event not found'], 404);
     }
 
@@ -367,6 +390,14 @@ class EventController extends Controller
             $event->update([
                 'status' => 'Approve'
             ]);
+
+            // Get all users to send the email to
+            $users = User::where('is_approve', 'Y')->where('is_active', 'Y')->get(); // Modify this if you want to filter users
+
+            // Loop through all users and send the event approval email
+            foreach ($users as $user) {
+                Mail::to($user->email)->queue(new EventApprovedEmail($event));
+            }
 
             return redirect()->route('calendar.index')->with('success', 'The event has been successfully added to the calendar.');
         }

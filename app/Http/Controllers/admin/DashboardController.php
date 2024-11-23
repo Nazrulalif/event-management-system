@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Event;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -46,6 +47,20 @@ class DashboardController extends Controller
         $totalEventApprove = Event::where('status', 'Approve')->count();
         $totalEventPending = Event::where('status', 'Pending')->count();
         $totalEventReject = Event::where('status', 'Reject')->count();
+
+        // Get current date
+        $currentDate = Carbon::now();
+
+        // Retrieve all pending events where the start_date is in the past
+        $events = Event::where('status', 'Pending')
+            ->where('start_date', '<', $currentDate)
+            ->get();
+
+        // Update each event's status to "Cancelled"
+        foreach ($events as $event) {
+            $event->status = 'Cancelled';
+            $event->save();
+        }
 
         return view('admin.dashboard.index', compact(
             'totalEvent',

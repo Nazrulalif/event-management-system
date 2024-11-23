@@ -17,10 +17,11 @@ class role extends Seeder
         $roles = [
             'Administrator',
             'Staff',
+            'Agent',
         ];
 
         // IDs assigned to each role
-        $ids = [1, 2];
+        $ids = [1, 2, 3];
 
         // Insert roles into the database
         foreach ($roles as $roleName) {

@@ -32,8 +32,15 @@ Route::get('/', function () {
     if (Auth::check()) {
         return redirect(route('dashboard.admin'));
     }
-    return view('session.index');
+    return view('session.login');
 })->name('login');
+
+Route::get('/register', function () {
+    if (Auth::check()) {
+        return redirect(route('dashboard.admin'));
+    }
+    return view('session.register');
+})->name('register');
 
 Route::get('/logout', function (Request $request) {
     try {
@@ -47,6 +54,7 @@ Route::get('/logout', function (Request $request) {
 })->name('logout');
 
 Route::post('/login-post', [AuthController::class, 'post'])->name('login.post');
+Route::post('/register-post', [AuthController::class, 'register'])->name('register.post');
 
 route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.admin');
