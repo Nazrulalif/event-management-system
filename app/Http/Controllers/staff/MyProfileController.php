@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\admin;
+namespace App\Http\Controllers\staff;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -13,11 +13,16 @@ class MyProfileController extends Controller
 {
     public function index()
     {
-        return view('admin.my-profile.index');
+        return view('staff.my-profile.index');
     }
 
     public function update(Request $request)
     {
+
+        $request->validate([
+            'profile_picture' => 'nullable',
+        ]);
+
         $user = User::findOrFail(Auth::user()->id);
 
         if ($request->hasFile('profile_picture')) {
