@@ -29,7 +29,21 @@ class Event extends Model
     ];
 
     protected $dates = ['start_date', 'end_date'];
-
+    public function getStatusColorAttribute()
+    {
+        switch ($this->status) {
+            case 'Approve':
+                return 'success';
+            case 'Pending':
+                return 'warning';
+            case 'Reject':
+                return 'danger';
+            case 'Cancelled':
+                return 'secondary';
+            default:
+                return 'info';
+        }
+    }
     public function schedules()
     {
         return $this->hasMany(Event_schedule::class, 'event_guid', 'id');

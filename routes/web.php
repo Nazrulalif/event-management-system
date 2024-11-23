@@ -5,6 +5,7 @@ use App\Http\Controllers\admin\CalendarController;
 use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\EventController;
 use App\Http\Controllers\admin\MyProfileController;
+use App\Http\Controllers\admin\ReportController;
 use App\Http\Controllers\admin\StaffController;
 use App\Http\Controllers\admin\ViewEventController;
 use App\Http\Controllers\AuthController;
@@ -88,7 +89,6 @@ route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::post('/event-management/reject/{id}', [EventController::class, 'reject'])->name('event.reject');
     Route::post('/event-management/approve/{id}', [EventController::class, 'approve'])->name('event.approve');
     Route::get('/event-draft', [EventController::class, 'draft'])->name('event.draft');
-    Route::get('/event-detail/{id}', [EventController::class, 'detail'])->name('calendar.detail');
 
     Route::get('/event-progress-main/{id}', [EventController::class, 'edit'])->name('event.progress');
 
@@ -127,6 +127,11 @@ route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/events/{id}/check-progress-agent', [EventController::class, 'checkProgress_agent']);
 
     Route::get('/view-event/{id}', [ViewEventController::class, 'index'])->name('view.index');
+    Route::get('/view-event-print/{id}', [ViewEventController::class, 'print'])->name('view.print');
+
+    Route::get('/report', [ReportController::class, 'index'])->name('report.index');
+    Route::get('/view-report', [ReportController::class, 'post'])->name('report.post');
+    Route::get('/report-print', [ReportController::class, 'print'])->name('report.print');
 });
 
 route::middleware(['auth', 'web', 'staff'])->group(function () {

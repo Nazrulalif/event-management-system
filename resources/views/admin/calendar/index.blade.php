@@ -117,7 +117,7 @@
 
             $('#deleteEventBtn').data('event-id', id);
             var eventId = id;
-            var detailUrl = '/admin/event-detail/' + eventId; // Adjust with your route structure
+            var detailUrl = '/admin/view-event/' + eventId; // Adjust with your route structure
             $('#eventModal').find('#viewDetail').attr('href', detailUrl);
         });
     });

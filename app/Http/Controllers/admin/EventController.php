@@ -178,10 +178,6 @@ class EventController extends Controller
         return view('admin.event.draft', compact('pendingCount'));
     }
 
-    public function detail($id)
-    {
-        return view('admin.event.detail');
-    }
 
     public function edit($id)
     {

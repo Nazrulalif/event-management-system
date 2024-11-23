@@ -48,7 +48,7 @@
                     render: function (data, type, row) {
                         return `
                             <div>
-                                <a type="button" title="View" class="btn btn-primary btn-sm">
+                                <a href='/admin/view-event/${row.id}' title="View" class="btn btn-primary btn-sm">
                                     <i class="fas fa-eye"></i>
                                 </a>
                                 <button title="approve" class="btn btn-success btn-sm approve" data-id="${row.id}">

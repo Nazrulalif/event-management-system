@@ -84,7 +84,8 @@
                     'admin/event-progress-agent-grouping/*',
                     'admin/event-progress-target/*',
                     'admin/event-progress-budget/*',
-                    'admin/event-progress-reward/*'
+                    'admin/event-progress-reward/*',
+                    'admin/view-event/*',
                     ) ? 'active' : '') }}">
                         <i class="nav-icon fas fa-calendar-plus"></i>
                         <p>
@@ -95,7 +96,7 @@
                 </li>
                 <li class="nav-header text-uppercase">Report</li>
                 <li class="nav-item">
-                    <a href="" class="nav-link {{ (Request::is('admin/') ? 'active' : '') }}">
+                    <a href="{{ route('report.index') }}" class="nav-link {{ (Request::is('admin/report', 'admin/view-report*') ? 'active' : '') }}">
                         <i class="nav-icon fas fa-file-alt"></i>
                         <p>
                             Report
