@@ -29,31 +29,31 @@
                 <div class="card-header p-2">
                     <ul class="nav nav-pills">
                         <li class="nav-item">
-                            <a href="{{ route('event.progress', $data->id) }}"
+                            <a href="{{ route('event.progress.user', $data->id) }}"
                                 class="nav-link {{ (Request::is('event-progress-main/*')? 'active' : '' )}} ">
                                 Main
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('event.progress.schedule', $data->id) }}"
+                            <a href="{{ route('event.progress.schedule.user', $data->id) }}"
                                 class="nav-link {{ (Request::is('event-progress-schedule/*')? 'active' : '' )}} ">
                                 Event Schedule
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('event.progress.staff', $data->id) }}"
+                            <a href="{{ route('event.progress.staff.user', $data->id) }}"
                                 class="nav-link {{ (Request::is('event-progress-staff-grouping/*')? 'active' : '' )}} ">
                                 Event Staff Grouping
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('event.progress.agent', $data->id) }}"
+                            <a href="{{ route('event.progress.agent.user', $data->id) }}"
                                 class="nav-link {{ (Request::is('event-progress-agent-grouping/*')? 'active' : '' )}} ">
                                 Event Agent Grouping
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('event.progress.target', $data->id) }}"
+                            <a href="{{ route('event.progress.target.user', $data->id) }}"
                                 class="nav-link {{ (Request::is('event-progress-target/*')? 'active' : '' )}} ">
                                 Event Target & ROI
                             </a>
@@ -65,7 +65,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('event.progress.reward', $data->id) }}"
+                            <a href="{{ route('event.progress.reward.user', $data->id) }}"
                                 class="nav-link {{ (Request::is('event-progress-reward/*')? 'active' : '' )}} ">
                                 Event Rewards 
                             </a>

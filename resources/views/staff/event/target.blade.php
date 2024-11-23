@@ -7,7 +7,7 @@
     </div>
 </div>
 
-<form id="productForm" method="POST" action="{{ route('event.target.update', $data['id']) }}">
+<form id="productForm" method="POST" action="{{ route('event.target.update.user', $data['id']) }}">
     @csrf
     <div class="container pt-4">
         <div class="table-responsive">

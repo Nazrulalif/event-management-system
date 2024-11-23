@@ -186,7 +186,7 @@ class EventController extends Controller
                 'created_by' => Auth::user()->id,
             ]);
 
-            return redirect()->route('event.progress', $event->id)->with('success', 'Event added successfully.');
+            return redirect()->route('event.progress.user', $event->id)->with('success', 'Event added successfully.');
         } catch (\Exception $th) {
             return redirect()->back()->with('error', 'Event add failed: ' . $th->getMessage());
         }
@@ -257,7 +257,7 @@ class EventController extends Controller
                 'created_by' => Auth::user()->id,
             ]);
 
-            return redirect()->route('event.progress.schedule', $id)->with('success', 'Event updated successfully.');
+            return redirect()->route('event.progress.schedule.user', $id)->with('success', 'Event updated successfully.');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Event update failed: ' . $th->getMessage());
         }
@@ -319,7 +319,7 @@ class EventController extends Controller
             }
         }
 
-        return redirect()->route('event.progress.staff', $id)->with('success', 'Schedules saved successfully!');
+        return redirect()->route('event.progress.staff.user', $id)->with('success', 'Schedules saved successfully!');
     }
 
     public function reward($id)
@@ -378,11 +378,11 @@ class EventController extends Controller
         if ($request->isComplete) {
             $event = Event::findOrFail($id);
             $event->update([
-                'status' => 'Approve'
+                'status' => 'Pending'
             ]);
 
 
-            return redirect()->route('event.index')->with('success', 'The event has been sent to admin for approval.');
+            return redirect()->route('event.index.user')->with('success', 'The event has been sent to admin for approval.');
         }
 
         // Prepare the prize and condition data
@@ -420,7 +420,7 @@ class EventController extends Controller
         }
 
         // Redirect back with the success message
-        return redirect()->route('event.progress.reward', $id)
+        return redirect()->route('event.progress.reward.user', $id)
             ->with('success', $message);
     }
 
@@ -588,7 +588,7 @@ class EventController extends Controller
 
             DB::commit();
 
-            return redirect()->route('event.progress.reward', $id)->with('success', 'Budget data has been saved successfully!');
+            return redirect()->route('event.progress.reward.user', $id)->with('success', 'Budget data has been saved successfully!');
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->back()->with('error', 'Failed to save budget data. ' . $e->getMessage())->withInput();
@@ -692,7 +692,7 @@ class EventController extends Controller
         }
 
         // Redirect back with a success message
-        return redirect()->route('event.progress.staff', $id)
+        return redirect()->route('event.progress.staff.user', $id)
             ->with('success', 'Group and members added successfully!');
     }
 
@@ -840,7 +840,7 @@ class EventController extends Controller
         }
 
         // Redirect back with a success message
-        return redirect()->route('event.progress.agent', $id)
+        return redirect()->route('event.progress.agent.user', $id)
             ->with('success', 'Group and members added successfully!');
     }
 

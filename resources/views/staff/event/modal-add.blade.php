@@ -7,7 +7,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{ route('events.store') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+            <form action="{{ route('events.store.user') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 <div class="modal-body px-4">
                     <div class="form-group">

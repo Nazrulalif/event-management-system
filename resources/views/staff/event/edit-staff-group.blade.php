@@ -2,7 +2,7 @@
  <div class="modal fade" id="modalEdit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog ">
         <div class="modal-content">
-            <form action="{{ route('event.staff.editUpdate') }}" method="post" enctype="multipart/form-data"
+            <form action="{{ route('event.staff.editUpdate.user') }}" method="post" enctype="multipart/form-data"
                 autocomplete="off">
                 @csrf
 

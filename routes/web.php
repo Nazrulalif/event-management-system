@@ -155,37 +155,37 @@ route::middleware(['auth', 'web', 'staff'])->group(function () {
 
 
     Route::get('/view-event/{id}', [StaffViewEventController::class, 'index'])->name('view.index');
-    Route::get('/view-event-print/{id}', [StaffViewEventController::class, 'print'])->name('view.print');
+    Route::get('/view-event-print/{id}', [StaffViewEventController::class, 'print'])->name('view.print.user');
 
     //agent management
-    Route::get('/agent-management', [StaffAgentController::class, 'index'])->name('agent.index');
-    Route::post('/agent-management/add', [StaffAgentController::class, 'add'])->name('agent.add');
+    Route::get('/agent-management', [StaffAgentController::class, 'index'])->name('agent.index.user');
+    Route::post('/agent-management/add', [StaffAgentController::class, 'add'])->name('agent.add.user');
     Route::delete('/agent-management/delete/{id}', [StaffAgentController::class, 'delete'])->name('agent.delete');
     Route::get('/agent-detail/{id}', [StaffAgentController::class, 'detail'])->name('agent.detail');
-    Route::post('/agent-detail-update/{id}', [StaffAgentController::class, 'update'])->name('agent.detail.update');
+    Route::post('/agent-detail-update/{id}', [StaffAgentController::class, 'update'])->name('agent.detail.update.user');
 
-    Route::get('/event-management', [StaffEventController::class, 'index'])->name('event.index');
+    Route::get('/event-management', [StaffEventController::class, 'index'])->name('event.index.user');
     Route::get('/event-management/show/{id}', [StaffEventController::class, 'show'])->name('event.show');
-    Route::post('/event-management/update', [StaffEventController::class, 'update'])->name('event.update');
+    Route::post('/event-management/update', [StaffEventController::class, 'update'])->name('event.update.user');
     Route::delete('/event-management/delete/{id}', [StaffEventController::class, 'delete'])->name('event.delete');
-    Route::get('/event-draft', [StaffEventController::class, 'draft'])->name('event.draft');
-    Route::post('/add-event', [StaffEventController::class, 'store'])->name('events.store');
+    Route::get('/event-draft', [StaffEventController::class, 'draft'])->name('event.draft.user');
+    Route::post('/add-event', [StaffEventController::class, 'store'])->name('events.store.user');
 
-    Route::get('/event-progress-main/{id}', [StaffEventController::class, 'edit'])->name('event.progress');
+    Route::get('/event-progress-main/{id}', [StaffEventController::class, 'edit'])->name('event.progress.user');
 
-    Route::PUT('/event-progress/main-update/{id}', [StaffEventController::class, 'main_update'])->name('event.progress.main');
+    Route::PUT('/event-progress/main-update/{id}', [StaffEventController::class, 'main_update'])->name('event.progress.main.user');
     Route::get('/events/{id}/check-progress-main', [StaffEventController::class, 'checkProgress_main']);
 
-    Route::get('/event-progress-schedule/{id}', [StaffEventController::class, 'schedule'])->name('event.progress.schedule');
-    Route::post('/event-progress/schedule-update/{id}', [StaffEventController::class, 'schedule_update'])->name('event.schedule.update');
+    Route::get('/event-progress-schedule/{id}', [StaffEventController::class, 'schedule'])->name('event.progress.schedule.user');
+    Route::post('/event-progress/schedule-update/{id}', [StaffEventController::class, 'schedule_update'])->name('event.schedule.update.user');
     Route::get('/events/{id}/check-progress-schedule', [StaffEventController::class, 'checkProgress_schedule']);
 
-    Route::get('/event-progress-reward/{id}', [StaffEventController::class, 'reward'])->name('event.progress.reward');
-    Route::post('/event-progress-reward-update/{id}', [StaffEventController::class, 'reward_update'])->name('event.reward.update');
+    Route::get('/event-progress-reward/{id}', [StaffEventController::class, 'reward'])->name('event.progress.reward.user');
+    Route::post('/event-progress-reward-update/{id}', [StaffEventController::class, 'reward_update'])->name('event.reward.update.user');
     Route::get('/events/{id}/check-progress-reward', [StaffEventController::class, 'checkProgress_reward']);
 
-    Route::get('/event-progress-target/{id}', [StaffEventController::class, 'target'])->name('event.progress.target');
-    Route::post('/event-progress-target-update/{id}', [StaffEventController::class, 'target_update'])->name('event.target.update');
+    Route::get('/event-progress-target/{id}', [StaffEventController::class, 'target'])->name('event.progress.target.user');
+    Route::post('/event-progress-target-update/{id}', [StaffEventController::class, 'target_update'])->name('event.target.update.user');
     Route::delete('/event-progress-target-delete/{id}', [StaffEventController::class, 'target_delete'])->name('event.target.delete');
     Route::get('/events/{id}/check-progress-target', [StaffEventController::class, 'checkProgress_target']);
 
@@ -193,17 +193,17 @@ route::middleware(['auth', 'web', 'staff'])->group(function () {
     Route::post('/event-progress-budget-update/{id}', [StaffEventController::class, 'budget_update'])->name('event.budget.update');
     Route::get('/events/{id}/check-progress-budget', [StaffEventController::class, 'checkProgress_budget']);
 
-    Route::get('/event-progress-staff-grouping/{id}', [StaffEventController::class, 'staff'])->name('event.progress.staff');
-    Route::post('/event-progress-staff-grouping-update/{id}', [StaffEventController::class, 'staff_update'])->name('event.staff.update');
+    Route::get('/event-progress-staff-grouping/{id}', [StaffEventController::class, 'staff'])->name('event.progress.staff.user');
+    Route::post('/event-progress-staff-grouping-update/{id}', [StaffEventController::class, 'staff_update'])->name('event.staff.update.user');
     Route::delete('/event-progress-staff-grouping-delete/{id}', [StaffEventController::class, 'staff_delete'])->name('event.staff.delete');
     Route::get('/event-progress-staff-grouping-show/{id}', [StaffEventController::class, 'staff_show'])->name('event.staff.show');
-    Route::post('/event-progress-staff-grouping-edit-update', [StaffEventController::class, 'staff_edit_update'])->name('event.staff.editUpdate');
+    Route::post('/event-progress-staff-grouping-edit-update', [StaffEventController::class, 'staff_edit_update'])->name('event.staff.editUpdate.user');
     Route::get('/events/{id}/check-progress-staff', [StaffEventController::class, 'checkProgress_staff']);
 
-    Route::get('/event-progress-agent-grouping/{id}', [StaffEventController::class, 'agent'])->name('event.progress.agent');
-    Route::post('/event-progress-agent-grouping-update/{id}', [StaffEventController::class, 'agent_update'])->name('event.agent.update');
+    Route::get('/event-progress-agent-grouping/{id}', [StaffEventController::class, 'agent'])->name('event.progress.agent.user');
+    Route::post('/event-progress-agent-grouping-update/{id}', [StaffEventController::class, 'agent_update'])->name('event.agent.update.user');
     Route::delete('/event-progress-agent-grouping-delete/{id}', [StaffEventController::class, 'agent_delete'])->name('event.agent.delete');
     Route::get('/event-progress-agent-grouping-show/{id}', [StaffEventController::class, 'agent_show'])->name('event.agent.show');
-    Route::post('/event-progress-agent-grouping-edit-update', [StaffEventController::class, 'staff_agent_update'])->name('event.agent.editUpdate');
+    Route::post('/event-progress-agent-grouping-edit-update', [StaffEventController::class, 'staff_agent_update'])->name('event.agent.editUpdate.user');
     Route::get('/events/{id}/check-progress-agent', [StaffEventController::class, 'checkProgress_agent']);
 });

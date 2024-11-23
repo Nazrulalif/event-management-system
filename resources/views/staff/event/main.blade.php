@@ -8,7 +8,7 @@
     </div>
 </div>
 
-<form action="{{ route('event.progress.main', $data->id) }}" method="POST" enctype="multipart/form-data"
+<form action="{{ route('event.progress.main.user', $data->id) }}" method="POST" enctype="multipart/form-data"
     autocomplete="off">
     @csrf
     @method('PUT')

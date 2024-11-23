@@ -8,7 +8,7 @@
 </div>
 
 <div class="container">
-    <form action="{{ route('event.reward.update', $data->id) }}" method="POST" enctype="multipart/form-data"
+    <form action="{{ route('event.reward.update.user', $data->id) }}" method="POST" enctype="multipart/form-data"
         autocomplete="off">
         @csrf
 

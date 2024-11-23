@@ -7,7 +7,7 @@
             <div id="progressBtn">Checking...</div>
         </div>
     </div>
-    <form action="{{ route('event.schedule.update', $data->id) }}" method="POST" enctype="multipart/form-data"
+    <form action="{{ route('event.schedule.update.user', $data->id) }}" method="POST" enctype="multipart/form-data"
         autocomplete="off">
         @csrf
 

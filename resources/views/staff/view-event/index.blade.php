@@ -28,7 +28,7 @@
                     <div class="card">
                         <div class="card-header ">
                             <h3 class="card-title">Event Information</h3>
-                            <a href="{{ route('view.print', $data->id) }}" rel="noopener" target="_blank" class="btn btn-default btn-sm float-right"><i class="fas fa-print"></i> Print</a>
+                            <a href="{{ route('view.print.user', $data->id) }}" rel="noopener" target="_blank" class="btn btn-default btn-sm float-right"><i class="fas fa-print"></i> Print</a>
                         </div>
                         <div class="card-body">
                             <p><i class="fas fa-calendar-alt mr-2"></i> {{ $start_date }} to {{ $end_date }}</p>

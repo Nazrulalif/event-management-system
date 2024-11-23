@@ -60,6 +60,8 @@
                             return `<div class='badge badge-danger'> ${data} </div>`;
                         } else if (data == 'Cancelled') {
                             return `<div class='badge badge-warning'> ${data} </div>`;
+                        } else if (data == 'Pending') {
+                            return `<div class='badge badge-info'> ${data} </div>`;
                         } else {
                             return `<div class='badge badge-secondary'> Unknown status </div>`;
                         }

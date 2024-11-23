@@ -23,13 +23,13 @@
                 <div class="card-header p-2">
                     <ul class="nav nav-pills">
                         <li class="nav-item">
-                            <a href="{{ route('event.index') }}"
+                            <a href="{{ route('event.index.user') }}"
                                 class="nav-link {{ (Request::is('event-management')? 'active' : '' )}} ">
                                 All
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('event.draft') }}"
+                            <a href="{{ route('event.draft.user') }}"
                                 class="nav-link {{ (Request::is('event-draft')? 'active' : '' )}} ">
                                 My Draft
                             </a>

@@ -2,7 +2,7 @@
  <div class="modal fade" id="modalAdd" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog ">
         <div class="modal-content">
-            <form action="{{ route('agent.add') }}" method="post" enctype="multipart/form-data" autocomplete="off">
+            <form action="{{ route('agent.add.user') }}" method="post" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">User Registration</h5>

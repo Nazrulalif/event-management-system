@@ -37,7 +37,7 @@
                 </li>
                 <li class="nav-header text-uppercase">Setup</li>
                 <li class="nav-item">
-                    <a href="{{ route('agent.index') }}"
+                    <a href="{{ route('agent.index.user') }}"
                         class="nav-link {{ (Request::is('agent-management', 'agent-detail/*') ? 'active' : '') }}">
                         <i class="nav-icon fas fa-user"></i>
                         <p>
@@ -46,7 +46,7 @@
                     </a>
                 </li>
                 <li class="nav-item ">
-                    <a href="{{ route('event.index') }}" class="nav-link {{ (Request::is(
+                    <a href="{{ route('event.index.user') }}" class="nav-link {{ (Request::is(
                      'event-management', 
                     'event-pending', 'event-draft',
                     'event-progress-main/*', 
