@@ -75,7 +75,7 @@
             companyNameInput.removeAttribute('required');
             unitInput.removeAttribute('required');
 
-            if (selectedValue === 'Rover') {
+            if (selectedValue === 'Rovers') {
                 companyNameContainer.style.display = 'block';
                 companyNameInput.setAttribute('required', 'required');
             } else if (selectedValue === 'Nextstar') {
