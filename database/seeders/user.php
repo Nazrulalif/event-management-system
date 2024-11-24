@@ -16,6 +16,6 @@ class user extends Seeder
         ModelsUser::factory()->admin()->create();
 
         // Create staff users
-        ModelsUser::factory()->staff()->count(5)->create();
+        // ModelsUser::factory()->staff()->count(5)->create();
     }
 }
