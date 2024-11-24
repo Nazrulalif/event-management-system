@@ -60,9 +60,9 @@
 
 <body class="hold-transition sidebar-mini layout-fixed " style="font-size: 14px">
     <div class="wrapper h-100">
-        @auth
-        @yield('auth')
-        @endauth
+        @if(Auth::guard('agent')->check() || Auth::check())
+            @yield('auth')
+        @endif
         @if($errors->any())
         <script>
             document.addEventListener('DOMContentLoaded', function () {

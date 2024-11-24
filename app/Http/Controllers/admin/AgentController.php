@@ -3,12 +3,16 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\WelcomeEmail;
 use App\Models\Agent;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Str;
 
 class AgentController extends Controller
 {
@@ -38,14 +42,18 @@ class AgentController extends Controller
             'unit' => 'required_if:channel,Nextstar',
         ]);
 
+        $generatedPassword = Str::random(10);
         try {
-            Agent::create([
+            $user = Agent::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'phone_number' => $request->phone, // Corrected key to match input name
                 'channel' => $request->channel,
+                'password' => Hash::make($generatedPassword),
                 'attribute' => $request->channel === 'Rover' ? $request->company_name : ($request->channel === 'Nextstar' ? $request->unit : ''),
             ]);
+
+            Mail::to($user->email)->queue(new WelcomeEmail($user, $generatedPassword));
 
             return redirect()->back()->with('success', "Agent added successfully.");
         } catch (\Exception $th) {

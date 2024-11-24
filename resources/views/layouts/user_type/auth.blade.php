@@ -2,11 +2,12 @@
 
 @section('auth')
 
-
-@if(Auth::user()->role_guid ==1)
-        @include('layouts.navbars.auth.sidebar-admin')
-    @else
-        @include('layouts.navbars.auth.sidebar-user')
+@if(Auth::guard('agent')->check())
+    @include('layouts.navbars.auth.sidebar-agent')
+@elseif(Auth::user()->role_guid ==1)
+    @include('layouts.navbars.auth.sidebar-admin')
+@else
+    @include('layouts.navbars.auth.sidebar-user')
 @endif
 
 <main class="main-content">

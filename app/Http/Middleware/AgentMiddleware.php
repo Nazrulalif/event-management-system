@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class AdminMiddleware
+class AgentMiddleware
 {
     /**
      * Handle an incoming request.
@@ -16,18 +16,18 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check()) {
+        // Check if the agent is logged in using the agent guard
+        if (Auth::guard('agent')->check()) {
+            return $next($request);
+        } elseif (Auth::check()) {
             if (Auth::user()->role_guid == 1) {
-                return $next($request);
-            } elseif (Auth::user()->role_guid == 2) {
-                return redirect('/home')->with('message', 'error');
+                return redirect('/admin/dashboard')->with('message', 'error');
             } else {
-                return redirect('/agent/home')->with('message', 'error');
+                return redirect('/home')->with('message', 'error');
             }
         } else {
             return redirect('/')->with('message', 'error');
         }
-
         return $next($request);
     }
 }

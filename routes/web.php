@@ -8,6 +8,9 @@ use App\Http\Controllers\admin\MyProfileController;
 use App\Http\Controllers\admin\ReportController;
 use App\Http\Controllers\admin\StaffController;
 use App\Http\Controllers\admin\ViewEventController;
+use App\Http\Controllers\agent\AgentController as AgentAgentController;
+use App\Http\Controllers\agent\HomeController as AgentHomeController;
+use App\Http\Controllers\agent\MyProfileController as AgentMyProfileController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\staff\AgentController as StaffAgentController;
 use App\Http\Controllers\staff\EventController as StaffEventController;
@@ -33,8 +36,15 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    // Check if the regular user is authenticated
     if (Auth::check()) {
-        return redirect(route('dashboard.admin'));
+        $user = Auth::user();
+        return ($user->role_guid == 1)
+            ? redirect()->route('dashboard.admin') // Redirect to admin dashboard
+            : redirect()->route('home'); // Redirect to regular user home
+    }
+    if (Auth::guard('agent')->check()) {
+        return redirect()->route('home.agent'); // Redirect to agent home/dashboard
     }
     return view('session.login');
 })->name('login');
@@ -189,8 +199,8 @@ route::middleware(['auth', 'web', 'staff'])->group(function () {
     Route::delete('/event-progress-target-delete/{id}', [StaffEventController::class, 'target_delete'])->name('event.target.delete');
     Route::get('/events/{id}/check-progress-target', [StaffEventController::class, 'checkProgress_target']);
 
-    Route::get('/event-progress-budget/{id}', [StaffEventController::class, 'budget'])->name('event.progress.budget');
-    Route::post('/event-progress-budget-update/{id}', [StaffEventController::class, 'budget_update'])->name('event.budget.update');
+    Route::get('/event-progress-budget/{id}', [StaffEventController::class, 'budget'])->name('event.progress.budget.user');
+    Route::post('/event-progress-budget-update/{id}', [StaffEventController::class, 'budget_update'])->name('event.budget.update.user');
     Route::get('/events/{id}/check-progress-budget', [StaffEventController::class, 'checkProgress_budget']);
 
     Route::get('/event-progress-staff-grouping/{id}', [StaffEventController::class, 'staff'])->name('event.progress.staff.user');
@@ -206,4 +216,22 @@ route::middleware(['auth', 'web', 'staff'])->group(function () {
     Route::get('/event-progress-agent-grouping-show/{id}', [StaffEventController::class, 'agent_show'])->name('event.agent.show');
     Route::post('/event-progress-agent-grouping-edit-update', [StaffEventController::class, 'staff_agent_update'])->name('event.agent.editUpdate.user');
     Route::get('/events/{id}/check-progress-agent', [StaffEventController::class, 'checkProgress_agent']);
+});
+
+route::prefix('agent')->middleware(['agent'])->group(function () {
+    Route::get('/home', [AgentHomeController::class, 'index'])->name('home.agent');
+    Route::get('/events', [AgentHomeController::class, 'getEvents']);
+    Route::get('/my-profile', [AgentMyProfileController::class, 'index'])->name('profile.agent');
+    Route::post('/my-profile-update', [AgentMyProfileController::class, 'update'])->name('profile.update.agent');
+    Route::post('/my-profile-change-password', [AgentMyProfileController::class, 'change_password'])->name('profile.password.agent');
+
+    Route::get('/view-event/{id}', [AgentHomeController::class, 'view'])->name('view.event.agent');
+    Route::get('/view-event-print/{id}', [AgentHomeController::class, 'print'])->name('view.print.agent');
+
+    //agent management
+    Route::get('/agent-management', [AgentAgentController::class, 'index'])->name('agent.index.agent');
+    Route::post('/agent-management/add', [AgentAgentController::class, 'add'])->name('agent.add.agent');
+    Route::delete('/agent-management/delete/{id}', [AgentAgentController::class, 'delete'])->name('agent.delete');
+    Route::get('/agent-detail/{id}', [AgentAgentController::class, 'detail'])->name('agent.agent');
+    Route::post('/agent-detail-update/{id}', [AgentAgentController::class, 'update'])->name('agent.detail.update.agent');
 });

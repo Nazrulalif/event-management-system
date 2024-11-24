@@ -509,7 +509,7 @@ class EventController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('event.progress.budget', $id)->with('success', 'Products updated successfully.');
+            return redirect()->route('event.progress.budget.user', $id)->with('success', 'Products updated successfully.');
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->back()->with('error', 'Failed to update products: ' . $e->getMessage())->withInput();

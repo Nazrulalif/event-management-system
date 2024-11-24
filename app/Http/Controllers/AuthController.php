@@ -12,37 +12,51 @@ class AuthController extends Controller
     public function post(Request $request)
     {
         $request->validate([
-            'email' => 'required',
+            'email' => 'required|email',
             'password' => 'required'
         ]);
 
         $credentials = $request->only('email', 'password');
 
-
+        // Try authenticating as staff/admin
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
 
-            if ($user->is_approve == "Y") {
-                if ($user->is_active == "Y") {
-                    if ($user->role_guid == 1) {
-                        return redirect()->intended(route('dashboard.admin'))->with("success", "Authentication success");
-                    } else {
-
-                        return redirect()->intended(route('home'))->with("success", "Authentication success");
-                    }
-                } else {
-                    Auth::logout();
-                    return redirect(route('login'))->with("error", "Authentication failed, your account not exist in this system.");
-                }
-            } else {
+            if ($user->is_approve !== "Y") {
                 Auth::logout();
-                return redirect(route('login'))->with("error", "Authentication failed, your account has not been approved yet.");
+                return redirect()->route('login')
+                    ->with("error", "Your account has not been approved yet.");
             }
+
+            if ($user->is_active !== "Y") {
+                Auth::logout();
+                return redirect()->route('login')
+                    ->with("error", "Your account is inactive.");
+            }
+
+            // Role-based redirection
+            return match ($user->role_guid) {
+                1 => redirect()->intended(route('dashboard.admin'))
+                    ->with("success", "Authentication successful"),
+                2 => redirect()->intended(route('home'))
+                    ->with("success", "Authentication successful"),
+                default => redirect()->route('login')
+                    ->with("error", "Invalid role assignment."),
+            };
         }
 
-        return redirect(route('login'))->with("error", "Authentication failed, the details you entered are incorrect.");
-    }
+        // Try authenticating as agent
+        if (Auth::guard('agent')->attempt($credentials)) {
+            return redirect()->intended(route('home.agent'))
+                ->with("success", "Authentication successful");
+        }
 
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        // Authentication failed
+        return redirect()->route('login')
+            ->with("error", "Authentication failed, the details you entered are incorrect.");
+    }
     public function register(Request $request)
     {
         $request->validate([

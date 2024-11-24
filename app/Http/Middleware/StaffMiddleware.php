@@ -19,13 +19,14 @@ class StaffMiddleware
         if (Auth::check()) {
             if (Auth::user()->role_guid == 2) {
                 return $next($request);
-            } else {
+            } elseif (Auth::user()->role_guid == 1) {
                 return redirect('/admin/dashboard')->with('message', 'error');
+            } else {
+                return redirect('/agent/home')->with('message', 'error');
             }
         } else {
             return redirect('/')->with('message', 'error');
         }
-
         return $next($request);
     }
 }

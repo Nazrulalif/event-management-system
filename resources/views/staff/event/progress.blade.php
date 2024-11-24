@@ -59,7 +59,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('event.progress.budget', $data->id) }}"
+                            <a href="{{ route('event.progress.budget.user', $data->id) }}"
                                 class="nav-link {{ (Request::is('event-progress-budget/*')? 'active' : '' )}} ">
                                 Event Budget
                             </a>

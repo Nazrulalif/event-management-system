@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\staff;
+namespace App\Http\Controllers\agent;
 
 use App\Http\Controllers\Controller;
 use App\Mail\WelcomeEmail;
@@ -25,7 +25,7 @@ class AgentController extends Controller
                 ->make(true);
         }
 
-        return view('staff.agent.index');
+        return view('agent.agent.index');
     }
 
     public function add(Request $request)
@@ -70,7 +70,7 @@ class AgentController extends Controller
     public function detail($id)
     {
         $agent = Agent::findOrFail($id);
-        return view('staff.agent.detail', compact('agent'));
+        return view('agent.agent.detail', compact('agent'));
     }
 
     public function update($id, Request $request)
