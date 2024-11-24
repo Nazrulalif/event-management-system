@@ -13,6 +13,6 @@ class agent extends Seeder
      */
     public function run(): void
     {
-        ModelsAgent::factory()->count(5)->create();
+        ModelsAgent::factory()->count(20)->create();
     }
 }

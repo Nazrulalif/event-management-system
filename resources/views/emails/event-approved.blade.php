@@ -13,7 +13,7 @@ We are pleased to inform you that the event **{{ $event->event_title }}** has be
 
 We look forward to your participation!
 
-@component('mail::button', ['url' => route('view.index', $event->id)])
+@component('mail::button', ['url' => route('login')])
 View Event Details
 @endcomponent
 

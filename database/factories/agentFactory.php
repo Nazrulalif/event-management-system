@@ -20,6 +20,7 @@ class agentFactory extends Factory
             'name' => fake()->name(),
             'email' => $this->faker->unique()->safeEmail(),
             'channel' => $this->faker->randomElement(['Rovers', 'Agents (UCA/UCP)', 'Nextstar']),
+            'password' => bcrypt('123'),
             'phone_number' => $this->faker->phoneNumber(),
         ];
     }
