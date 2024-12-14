@@ -43,8 +43,8 @@ class CalendarController extends Controller
                 'description' => $event->objective, // Description (objective of the event)
                 'start_time' => Carbon::parse($event->start_time)->format('g:i A'), // Format start time to 12-hour format
                 'end_time' => Carbon::parse($event->end_time)->format('g:i A'),
-                'start_date' => Carbon::parse($event->start_date)->format('l, d/m/Y'), // Format start date
-                'end_date' => Carbon::parse($event->end_date)->format('l, d/m/Y'),
+                // 'start_date' => Carbon::parse($event->start_date)->format('l, d/m/Y'), // Format start date
+                // 'end_date' => Carbon::parse($event->end_date)->format('l, d/m/Y'),
                 'platform' => $event->platform, // Platform (e.g., Landed, Highrise)
                 'creator_name' => $event->creator_name, // Creator's name (from users table)
             ];
@@ -80,7 +80,7 @@ class CalendarController extends Controller
             'start_time' => 'required',
             'end_time' => 'required',
             'platform' => 'required',
-            'objective' => 'required',
+            // 'objective' => 'required',
         ]);
 
         try {

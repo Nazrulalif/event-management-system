@@ -3,7 +3,7 @@
         <div class="card-title">Settings</div>
     </div>
     <div class="card-body">
-        <form class="form-horizontal" method="POST" action="{{ route('agent.detail.update.agent', $agent->id) }}" enctype="multipart/form-data" autocomplete="off">
+        <form class="form-horizontal" method="POST" action="{{ route('agent.detail.update.user', $agent->id) }}" enctype="multipart/form-data" autocomplete="off">
             @csrf
             <div class="form-group row">
                 <label for="" class="col-sm-2 col-form-label required">Name</label>

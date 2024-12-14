@@ -5,7 +5,7 @@
             <form action="{{ route('agent.add.user') }}" method="post" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">User Registration</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Agent Registration</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>

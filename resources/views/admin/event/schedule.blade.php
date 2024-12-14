@@ -38,7 +38,7 @@
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-3">
-                                    <label for="">Target</label>
+                                    <label for="">Target (GS)</label>
                                 </div>
                                 <div class="col-md-9">
                                     <input type="number" name="schedules[{{ $i - 1 }}][target]" class="form-control"
@@ -65,7 +65,7 @@
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-3">
-                                    <label for="">Event Vanue</label>
+                                    <label for="">Event Venue (POI)</label>
                                 </div>
                                 <div class="col-md-9">
                                     
@@ -94,6 +94,7 @@
                             <button type="button" class="btn btn-sm btn-primary add-activity" data-day="{{ $i - 1 }}">
                                 Add Activity
                             </button>
+                            <button type="button" class="btn btn-danger btn-sm delete-activity-row" style="display:none;">Delete Activity</button>  
                         </div>
                     </div>
                 </div>
@@ -123,7 +124,7 @@
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-3">
-                                    <label for="">Target</label>
+                                    <label for="">Target (GS)</label>
                                 </div>
                                 <div class="col-md-9">
                                     <input type="number" name="schedules[{{ $loop->index  }}][target]"
@@ -141,7 +142,7 @@
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-3">
-                                    <label for="">Event Vanue</label>
+                                    <label for="">Event Venue (POI)</label>
                                 </div>
                                 <div class="col-md-9">
                                         <textarea name="schedules[{{$loop->index  }}][event_vanue]" class="form-control" 
@@ -281,6 +282,50 @@
                 </div>
             `;
             container.append(newActivity);
+            toggleDeleteButton(container);
+        });
+
+        $('.delete-activity-row').click(function () {
+            const container = $(this).siblings('.activities-container');
+            const rows = container.find('.activity-row');
+
+            if (rows.length > 0) {
+                rows.last().remove();
+            }
+        });
+
+        // Delete Specific Activity Row
+        function toggleDeleteButton(container) {
+            const deleteButton = container.siblings('.delete-activity-row');
+            const rowCount = container.find('.activity-row').length;
+
+            if (rowCount > 1) {
+                deleteButton.show();
+            } else {
+                deleteButton.hide();
+            }
+        }
+
+         $('.delete-activity-row').click(function () {
+            const container = $(this).siblings('.activities-container');
+            const rows = container.find('.activity-row');
+
+            if (rows.length > 1) {
+                rows.last().remove();
+                toggleDeleteButton(container);
+            }
+        });
+
+        // Delete Specific Activity Row
+        $(document).on('click', '.delete-activity', function () {
+            const container = $(this).closest('.activities-container');
+            $(this).closest('.activity-row').remove();
+            toggleDeleteButton(container);
+        });
+
+        // Initial Check on Page Load
+        $('.activities-container').each(function () {
+            toggleDeleteButton($(this));
         });
     });
 

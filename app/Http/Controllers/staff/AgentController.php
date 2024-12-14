@@ -41,6 +41,8 @@ class AgentController extends Controller
         ]);
         $generatedPassword = Str::random(10);
 
+        // dd($request->all());
+
         try {
             $user = Agent::create([
                 'name' => $request->name,
@@ -48,7 +50,7 @@ class AgentController extends Controller
                 'phone_number' => $request->phone, // Corrected key to match input name
                 'channel' => $request->channel,
                 'password' => Hash::make($generatedPassword),
-                'attribute' => $request->channel === 'Rover' ? $request->company_name : ($request->channel === 'Nextstar' ? $request->unit : ''),
+                'attribute' => $request->channel === 'Rovers' ? $request->company_name : ($request->channel === 'Nextstar' ? $request->unit : ''),
             ]);
             Mail::to($user->email)->queue(new WelcomeEmail($user, $generatedPassword));
             return redirect()->back()->with('success', "Agent added successfully.");

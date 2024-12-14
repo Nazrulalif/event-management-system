@@ -14,7 +14,7 @@
                     <h4 class="card-title">Event Report</h4>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('report.post') }}" method="get" enctype="multipart/form-data" autocomplete="off">
+                    <form action="{{ route('report.post.user') }}" method="get" enctype="multipart/form-data" autocomplete="off">
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-md-6">
@@ -41,7 +41,7 @@
                 </div>
             @endif
             @if(!empty($events) && count($events) > 0)
-                @include('admin.report.report')
+                @include('staff.report.report')
             @endif
         </div>
     </section>

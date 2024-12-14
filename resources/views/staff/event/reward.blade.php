@@ -17,21 +17,21 @@
             <div class="col-md-6">
                 <h5>Internal Category</h5>
                 <div class="form-group">
-                    <label for="internal_first_prize">First Prize</label>
+                    <label for="internal_first_prize">First Prize (RM)</label>
                     <input type="number" name="prizes[internal][first]" id="internal_first_prize" class="form-control"
                         placeholder="Amount" required
                         value="{{ old('prizes.internal.first', json_decode($reward->prize, true)['internal']['first'] ?? '') }}">
                 </div>
 
                 <div class="form-group">
-                    <label for="internal_second_prize">Second Prize</label>
+                    <label for="internal_second_prize">Second Prize (RM)</label>
                     <input type="number" name="prizes[internal][second]" id="internal_second_prize" class="form-control"
                         placeholder="Amount" required
                         value="{{ old('prizes.internal.second', json_decode($reward->prize, true)['internal']['second'] ?? '') }}">
                 </div>
 
                 <div class="form-group">
-                    <label for="internal_third_prize">Third Prize</label>
+                    <label for="internal_third_prize">Third Prize (RM)</label>
                     <input type="number" name="prizes[internal][third]" id="internal_third_prize" class="form-control"
                         placeholder="Amount" required
                         value="{{ old('prizes.internal.third', json_decode($reward->prize, true)['internal']['third'] ?? '') }}">
@@ -49,21 +49,21 @@
             <div class="col-md-6">
                 <h5>External Category</h5>
                 <div class="form-group">
-                    <label for="external_first_prize">First Prize</label>
+                    <label for="external_first_prize">First Prize (RM)</label>
                     <input type="number" name="prizes[external][first]" id="external_first_prize" class="form-control"
                         placeholder="Amount" required
                         value="{{ old('prizes.external.first', json_decode($reward->prize, true)['external']['first'] ?? '') }}">
                 </div>
 
                 <div class="form-group">
-                    <label for="external_second_prize">Second Prize</label>
+                    <label for="external_second_prize">Second Prize (RM)</label>
                     <input type="number" name="prizes[external][second]" id="external_second_prize" class="form-control"
                         placeholder="Amount" required
                         value="{{ old('prizes.external.second', json_decode($reward->prize, true)['external']['second'] ?? '') }}">
                 </div>
 
                 <div class="form-group">
-                    <label for="external_third_prize">Third Prize</label>
+                    <label for="external_third_prize">Third Prize (RM)</label>
                     <input type="number" name="prizes[external][third]" id="external_third_prize" class="form-control"
                         placeholder="Amount" required
                         value="{{ old('prizes.external.third', json_decode($reward->prize, true)['external']['third'] ?? '') }}">

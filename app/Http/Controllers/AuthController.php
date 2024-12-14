@@ -64,14 +64,15 @@ class AuthController extends Controller
             'email' => 'required|email|max:255|unique:users,email',
             'team' => 'required',
             'gender' => 'required',
-            'password' => 'required|string|min:8|confirmed', // Use 'confirmed' to check against 'password_confirmation'
+            // 'password' => 'required|string|min:8|confirmed', // Use 'confirmed' to check against 'password_confirmation'
         ]);
 
         try {
             User::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'password' => Hash::make($request->password),
+                // 'password' => Hash::make($request->password),
+                'password' => '123',
                 'gender' => $request->gender,
                 'team' => $request->team,
                 'is_active' => "N",

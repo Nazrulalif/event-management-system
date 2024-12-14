@@ -16,6 +16,7 @@ use App\Http\Controllers\staff\AgentController as StaffAgentController;
 use App\Http\Controllers\staff\EventController as StaffEventController;
 use App\Http\Controllers\staff\HomeController;
 use App\Http\Controllers\staff\MyProfileController as StaffMyProfileController;
+use App\Http\Controllers\staff\ReportController as StaffReportController;
 use App\Http\Controllers\staff\ViewEventController as StaffViewEventController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -216,6 +217,10 @@ route::middleware(['auth', 'web', 'staff'])->group(function () {
     Route::get('/event-progress-agent-grouping-show/{id}', [StaffEventController::class, 'agent_show'])->name('event.agent.show');
     Route::post('/event-progress-agent-grouping-edit-update', [StaffEventController::class, 'staff_agent_update'])->name('event.agent.editUpdate.user');
     Route::get('/events/{id}/check-progress-agent', [StaffEventController::class, 'checkProgress_agent']);
+
+    Route::get('/report', [StaffReportController::class, 'index'])->name('report.index.user');
+    Route::get('/view-report', [StaffReportController::class, 'post'])->name('report.post.user');
+    Route::get('/report-print', [StaffReportController::class, 'print'])->name('report.print.user');
 });
 
 route::prefix('agent')->middleware(['agent'])->group(function () {

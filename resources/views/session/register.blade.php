@@ -59,7 +59,7 @@
             </div>
         </div>
     </div>
-    <div class="input-group mb-3">
+    {{-- <div class="input-group mb-3">
         <input type="password" class="form-control" name="password" placeholder="Password" required>
         @error('password')
         <p class="text-danger text-xs mt-2">{{ $message }}</p>
@@ -69,8 +69,8 @@
                 <span class="fas fa-lock"></span>
             </div>
         </div>
-    </div>
-    <div class="input-group mb-3">
+    </div> --}}
+    {{-- <div class="input-group mb-3">
         <input type="password" class="form-control" name="password_confirmation" placeholder="Confirm Password" required>
         @error('password_confirmation')
         <p class="text-danger text-xs mt-2">{{ $message }}</p>
@@ -80,7 +80,7 @@
                 <span class="fas fa-lock"></span>
             </div>
         </div>
-    </div>
+    </div> --}}
     <div class="row">
         <div class="col-12">
             <button type="submit" class="btn btn-primary btn-block">Register</button>

@@ -50,7 +50,7 @@
                             </td>
                             <td>
                                 <textarea name="items[{{ $index }}][remark]" cols="30" rows="1" class="form-control"
-                                    required>{{ $item->remark }}</textarea>
+                                    >{{ $item->remark }}</textarea>
                             </td>
                             <td>
                                 <button type="button" class="btn btn-danger btn-sm delete-row" {!! $index === 0 ? 'style="display:none"' : '' !!}>
@@ -83,7 +83,7 @@
                             </td>
                             <td>
                                 <textarea name="items[0][remark]" cols="30" rows="1" class="form-control"
-                                    required></textarea>
+                                    ></textarea>
                             </td>
                             <td>
                                 <button type="button" class="btn btn-danger btn-sm delete-row" style="display:none">
@@ -109,7 +109,12 @@
                         <td>Agency Service Fee State (Local Vendor)</td>
                         <td></td>
                         <td></td>
-                        <td><input type="text" name="fee_percent" class="form-control" value="{{ $budget->fee_percent ?? '' }}" required></td>
+                        <td>
+                            <div class="input-group mb-3">
+                                <input type="text" name="fee_percent" class="form-control" value="{{ $budget->fee_percent ?? '' }}" required>
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </td>
                         <td><input type="text" name="fee" class="form-control" value="{{ $budget->fee ?? '' }}" readonly></td>
                         <td></td>
                         <td></td>
@@ -119,7 +124,12 @@
                         <td>Service Tax (6%)</td>
                         <td></td>
                         <td></td>
-                        <td><input type="text" name="tax_percent" class="form-control" value="{{ $budget->tax_percent ?? '' }}" required></td>
+                        <td>
+                            <div class="input-group mb-3">
+                                <input type="text" name="tax_percent" class="form-control" value="{{ $budget->tax_percent ?? '' }}" required>
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </td>
                         <td><input type="text" name="tax" class="form-control" value="{{ $budget->tax ?? '' }}" readonly></td>
                         <td></td>
                         <td></td>

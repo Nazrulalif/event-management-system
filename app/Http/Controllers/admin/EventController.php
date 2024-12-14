@@ -215,10 +215,10 @@ class EventController extends Controller
             'title' => 'required',
             'start_date' => 'required',
             'end_date' => 'required',
-            'start_time' => 'required',
-            'end_time' => 'required',
+            // 'start_time' => 'required',
+            // 'end_time' => 'required',
             'platform' => 'required',
-            'objective' => 'required',
+            // 'objective' => 'required',
             'poster' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Validate poster
         ]);
 
@@ -451,27 +451,21 @@ class EventController extends Controller
             'UNIFI FIXED WITH MOBILE AND DEVICE (FMC)',
             'UNIFI FIXED WITH MOBILE AND ENTERTAINMENT (FMCC)',
             'UNIFI FIXED WITH ENTERTAINMENT (FCC)',
+            'UNIFI FIXED WITH LIFESTYLE (FLC)',
+            'UNI5G POSTPAID 39',
+            'UNIFI AIR 5G + SIM + DEVICE',
+            'UNIFI AIR 4G LTE + SIM + DEVICE',
+            'UNIFI AIR 4G LTE + SIM',
             'WINBACK HSBA',
             'WINBACK TIME',
-            'UNIFI FIXED WITH LIFESTYLE (FLC)',
             'UNIBIG POSTPAID 99',
             'UNIBIG POSTPAID 69',
-            'UNIBIG POSTPAID 99',
             'UNIBIG POSTPAID FAMILY 129',
             'UNIBIG POSTPAID FAMILY 159',
             'UNIBIG POSTPAID FAMILY 189',
             'UNIBIG WOW 10',
             'UNIBIG WOW 25',
             'UNIBIG WOW 35',
-            'UNIBIG POSTPAID 99',
-            'UNIBIG POSTPAID 69',
-            'UNIBIG POSTPAID 99',
-            'UNIBIG POSTPAID FAMILY 129',
-            'UNIBIG POSTPAID FAMILY 159',
-            'UNIBIG POSTPAID FAMILY 189',
-            'UNIBIG WOW 10',
-            'UNIBIG WOW 25',
-            'UNIBIG WOW 35'
         ];
 
         $targets = Event_target::where('event_guid', $id)->get();
@@ -485,8 +479,8 @@ class EventController extends Controller
             'products.*.product' => 'required|string',
             'products.*.arpu' => 'required|numeric|min:0',
             'products.*.sales_physical_target' => 'required|integer|min:0',
-            'products.*.outbase' => 'required|integer|min:0',
-            'products.*.inbase' => 'required|integer|min:0',
+            // 'products.*.outbase' => 'required|integer|min:0',
+            // 'products.*.inbase' => 'required|integer|min:0',
             'products.*.revenue' => 'required|numeric|min:0',
         ]);
 
@@ -507,8 +501,8 @@ class EventController extends Controller
                             'product' => $product['product'],
                             'arpu' => $product['arpu'],
                             'sales_physical_target' => $product['sales_physical_target'],
-                            'outbase' => $product['outbase'],
-                            'inbase' => $product['inbase'],
+                            'outbase' => $product['outbase'] ?? 0,
+                            'inbase' => $product['inbase'] ?? 0,
                             'revenue' => $product['revenue'],
                         ]);
                 } else {
@@ -517,8 +511,8 @@ class EventController extends Controller
                         'product' => $product['product'],
                         'arpu' => $product['arpu'],
                         'sales_physical_target' => $product['sales_physical_target'],
-                        'outbase' => $product['outbase'],
-                        'inbase' => $product['inbase'],
+                        'outbase' => $product['outbase'] ?? 0,
+                        'inbase' => $product['inbase'] ?? 0,
                         'revenue' => $product['revenue'],
                         'event_guid' => $id
                     ]);
@@ -920,7 +914,7 @@ class EventController extends Controller
         $event = Event::findOrFail($eventId);
 
         // Define the completion criteria (adjust as per your database schema)
-        $isComplete = $event->event_title && $event->start_date && $event->end_date && $event->objective && $event->platform;
+        $isComplete = $event->event_title && $event->start_date && $event->end_date && $event->platform;
 
         return response()->json(['complete' => $isComplete]);
     }

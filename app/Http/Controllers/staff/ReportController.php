@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\admin;
+namespace App\Http\Controllers\staff;
 
 use App\Http\Controllers\Controller;
 use App\Models\Event;
@@ -10,7 +10,7 @@ class ReportController extends Controller
 {
     public function index()
     {
-        return view('admin.report.index');
+        return view('staff.report.index');
     }
 
     public function post(Request $request)
@@ -45,7 +45,7 @@ class ReportController extends Controller
         ];
 
         // Pass data to the view
-        return view('admin.report.index', compact('events', 'statusCounts', 'startDate', 'endDate'));
+        return view('staff.report.index', compact('events', 'statusCounts', 'startDate', 'endDate'));
     }
 
     public function print(Request $request)
@@ -76,6 +76,6 @@ class ReportController extends Controller
             'cancelled' => $events->where('status', 'Cancelled')->count(),
         ];
 
-        return view('admin.report.print', compact('events', 'statusCounts', 'startDate', 'endDate'));
+        return view('staff.report.print', compact('events', 'statusCounts', 'startDate', 'endDate'));
     }
 }

@@ -64,6 +64,15 @@
                         </p>
                     </a>
                 </li>
+                <li class="nav-header text-uppercase">Report</li>
+                <li class="nav-item">
+                    <a href="{{ route('report.index.user') }}" class="nav-link {{ (Request::is('report', 'view-report*') ? 'active' : '') }}">
+                        <i class="nav-icon fas fa-file-alt"></i>
+                        <p>
+                            Report
+                        </p>
+                    </a>
+                </li>
                 <li class="nav-header text-uppercase">Sign out</li>
                 <li class="nav-item">
                     <a href="{{ route('logout') }}" class="nav-link">

@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('event_rewards', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('event_guid');
-            $table->json('prize');  // JSON for storing prize values (first, second, third)
-            $table->text('condition');  // Text for condition (could be longer content)
+            $table->json('prize')->nullable();  // JSON for storing prize values (first, second, third)
+            $table->text('condition')->nullable();  // Text for condition (could be longer content)
             $table->timestamps();
 
             $table->foreign('event_guid')->references('id')->on('events')->onDelete('cascade');

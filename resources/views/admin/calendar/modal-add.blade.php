@@ -47,11 +47,11 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="platform" class="required">Objective</label>
-                        <textarea name="objective" id="objective" cols="30" rows="4" class="form-control" required></textarea>
+                        <label for="platform" class="">Objective (Not Required)</label>
+                        <textarea name="objective" id="objective" cols="30" rows="4" class="form-control" ></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="poster">Upload Poster (Optional)</label>
+                        <label for="poster">Upload Poster (Not required)</label>
                         <input type="file" class="form-control" name="poster">
                     </div>
                 </div>

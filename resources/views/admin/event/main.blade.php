@@ -80,10 +80,10 @@
     </div>
 
     <div class="form-group row">
-        <label for="objective" class="col-sm-2 col-form-label required">Objective</label>
+        <label for="objective" class="col-sm-2 col-form-label">Objective (Not Required)</label>
         <div class="col-sm-4">
             <textarea name="objective" id="objective" cols="30" rows="4" class="form-control"
-                required>{{ old('objective', $data->objective) }}</textarea>
+                >{{ old('objective', $data->objective) }}</textarea>
             @error('objective')
             <div class="text-danger">{{ $message }}</div>
             @enderror
@@ -91,7 +91,7 @@
     </div>
 
     <div class="form-group row">
-        <label for="poster" class="col-sm-2 col-form-label">Upload Poster (Optional)</label>
+        <label for="poster" class="col-sm-2 col-form-label">Upload Poster (Not Required)</label>
         <div class="col-sm-4">
             <input type="file" class="form-control" name="poster">
             <small class="text-muted ">Current Poster:</small>
