@@ -92,7 +92,7 @@
                     const today = new Date().toISOString().split('T')[0];
                     
                     // Show edit button only if status is 'Approve' and today is before or equal to start_date
-                    if (row.status === 'Approve' && today >= row.start_date) {
+                    if (row.status === 'Approve') {
                         editButton = `
                         <button title="Edit" 
                             class="btn btn-info btn-sm edit" 
@@ -102,7 +102,7 @@
                             <i class="fas fa-edit"></i>
                         </button>`;
 
-                    }else if(row.status === 'Reject' && today >= row.start_date && row.created_by === userId){
+                    }else if(row.status === 'Reject' && row.created_by === userId){
                         editButton = `
                         <a href='/event-progress-main/${row.id}' title="Edit" class="btn btn-info btn-sm">
                                     <i class="fas fa-edit"></i>
