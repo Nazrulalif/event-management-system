@@ -177,34 +177,34 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const startTimeInput = document.getElementById('start_time');
-        const endTimeInput = document.getElementById('end_time');
+        // const startTimeInput = document.getElementById('start_time');
+        // const endTimeInput = document.getElementById('end_time');
 
         const startDateInput = document.getElementById('startDate');
         const endDateInput = document.getElementById('endDate');
 
         // Validate Time
-        startTimeInput.addEventListener('change', function () {
-            const startTime = startTimeInput.value;
-            if (startTime) {
-                endTimeInput.setAttribute('min', startTime);
-            } else {
-                endTimeInput.removeAttribute('min');
-            }
-        });
+        // startTimeInput.addEventListener('change', function () {
+        //     const startTime = startTimeInput.value;
+        //     if (startTime) {
+        //         endTimeInput.setAttribute('min', startTime);
+        //     } else {
+        //         endTimeInput.removeAttribute('min');
+        //     }
+        // });
 
-        endTimeInput.addEventListener('change', function () {
-            const startTime = startTimeInput.value;
-            const endTime = endTimeInput.value;
-            if (startTime && endTime < startTime) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Invalid Time',
-                    text: 'End time cannot be earlier than start time.'
-                });
-                endTimeInput.value = ''; // Clear the invalid end time
-            }
-        });
+        // endTimeInput.addEventListener('change', function () {
+        //     const startTime = startTimeInput.value;
+        //     const endTime = endTimeInput.value;
+        //     if (startTime && endTime < startTime) {
+        //         Swal.fire({
+        //             icon: 'error',
+        //             title: 'Invalid Time',
+        //             text: 'End time cannot be earlier than start time.'
+        //         });
+        //         endTimeInput.value = ''; // Clear the invalid end time
+        //     }
+        // });
 
         // Validate Date
         const validateDates = () => {
